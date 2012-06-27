@@ -1,0 +1,1 @@
+/Users/Diex/Documents/WORK/PROGRAMACION/testing/processing/processing-read-only/processing/java/libraries/opengl/examples/Textures/Texture1/Texture1.pde
