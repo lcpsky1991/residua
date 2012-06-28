@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svnroot/residua/!svn/ver/6/trunk/Residua/src/models
+END
+ElasticWord.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/residua/!svn/ver/17/trunk/Residua/src/models/ElasticWord.java
+END
+ElasticGrid.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/residua/!svn/ver/10/trunk/Residua/src/models/ElasticGrid.java
+END
+ElasticRibbon.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/residua/!svn/ver/7/trunk/Residua/src/models/ElasticRibbon.java
+END
+Sphere.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/residua/!svn/ver/6/trunk/Residua/src/models/Sphere.java
+END
+Tube.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/residua/!svn/ver/7/trunk/Residua/src/models/Tube.java
+END
+Model3D.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/residua/!svn/ver/10/trunk/Residua/src/models/Model3D.java
+END
+Quad.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/residua/!svn/ver/9/trunk/Residua/src/models/Quad.java
+END
+ElasticStripe.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/residua/!svn/ver/7/trunk/Residua/src/models/ElasticStripe.java
+END
+ElasticChain.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/residua/!svn/ver/17/trunk/Residua/src/models/ElasticChain.java
+END
