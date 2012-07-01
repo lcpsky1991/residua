@@ -1,12 +1,19 @@
 /**
 
- * This class provides customized Joystick behaviours
+ * This class provides customized Joystick behaviours.
+ * It is specially designed to work whit a cheap usb gamepad
+ * with 2 analogs and such like this one: http://bit.ly/NSUfLz
+ * it supports a shifted state to enhace camera control whit same joystick
+ * 
+ * it relies on procontroll to wrap real HID device
+ * 
+ *  TODO a pathcbay to set functiosn at will.
  * 
  * @author Diego javier Alberti
- * @version 0.0.1
+ * @version 0.0.2
  * @author diex
  *
- * Copyleft (C) 2010 Diego Javier Alberti
+ * Copyleft (C) 2012 Diego Javier Alberti
  *
  * This source is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,16 +38,17 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import procontroll.*;
 import processing.core.*;
 import remixlab.proscene.HIDevice;
+import remixlab.proscene.Quaternion;
 import remixlab.proscene.Scene;
 
 public class Joystick extends HIDevice {
 
 
-	// PROPIEDADES DEL JOYSTICK
 
 	/*
-	 *  
-	 *  4 sliders
+	 game pad properties
+
+	    4 sliders
  		13 buttons
  		2 sticks
 
@@ -76,16 +84,16 @@ public class Joystick extends HIDevice {
 	     0: rz z
 	     1: y x
 
-	 *
-	 *
-	 *
-	 */
+	 	 */
 
 
-	private final boolean DEBUG = true;
+
+
+	private final boolean DEBUG = false;
 	private boolean available = false;
+
 	////////////////////////////////////////////////////////////
-	// defino las constantes para poder interfasear desde afuera
+	// handy static constants
 	////////////////////////////////////////////////////////////
 
 	public static final int 	LEFT = 0;
@@ -97,9 +105,11 @@ public class Joystick extends HIDevice {
 	public static final int 	A = 0;
 	public static final int 	B = 1;
 
-	public static final boolean TOGGLE = true;
-	public static final boolean TRIGGER = false;
-
+	
+	public static final int TRIGGER = 0;
+	public static final int TOGGLE = 1;
+	
+	
 	private boolean 			LEFT_LOCK = false;
 	private boolean 			RIGHT_LOCK = false;
 
@@ -107,22 +117,17 @@ public class Joystick extends HIDevice {
 	private boolean 			shift = false;
 
 
-	// el controlador del dispositivos
+	
 	private ControllIO controll;
-
-	// el joystick
 	private ControllDevice device;
 	private String deviceId = "USB  Joystick";
 
 
-
-	Thread th;
-
-
 	/////////////////////////////////////////////////////
-	//los valores que salen al exterior.
+	// internal containers for evaluating and interpolate (for accelerations effects)
 	/////////////////////////////////////////////////////
 
+	// analog controllers
 	private PVector left;					
 	private PVector right;	  
 
@@ -130,12 +135,10 @@ public class Joystick extends HIDevice {
 	private PVector sleft;					
 	private PVector sright;	  
 
-
 	private PVector pov;
 
-
-	private boolean[] buttonsState;					// el estado de los botones  	
-	private boolean[] buttonMode;					// para sabe[]r si es toggle o trigger cada boton independientemente	  	 
+	private boolean[] buttonsState;					//   	
+	private int[] buttonsMode;					// TRIGGER or TOGGLE (remains in the on state)
 
 
 	private float easeIn = 0.095f; 
@@ -153,29 +156,16 @@ public class Joystick extends HIDevice {
 
 	private ControllCoolieHat coolieHat;
 
-	//	
-	//	
-	//	private double X0 ;
-	//	private double Y0 ;
-	//	private double Z0 ; 
-	//	private double R0 ;
-	//
-	//	private double CURRENT_POV0;	    
-
-
-	/////////////////////////////////////////////////////
-	// los valores tal cual como vienen del joystick
-	/////////////////////////////////////////////////////
-
-
-
-
-
+	PVector translationSensitivity = new PVector(2, 2, 4);
+	
+	float theta = 0;
+	float phi = 0;
+	
+	
 	public Joystick(Scene scene){
 
 		super(scene);
-		//this.parent = parent.parent;
-		scene.parent.registerPre(this);
+		scene.parent.registerDraw(this);
 
 		controll = ControllIO.getInstance(scene.parent);
 		controll.printDevices();
@@ -207,11 +197,11 @@ public class Joystick extends HIDevice {
 			device.setTolerance(0.06f);
 
 			buttonsState = new boolean[device.getNumberOfButtons()];					// creo un array con todos los botones
-			buttonMode = new boolean[device.getNumberOfButtons()];					// creo el flag de toggle para los botones
+			buttonsMode = new int[device.getNumberOfButtons()];					// creo el flag de toggle para los botones
 
-			for(int j =0; j< buttonMode.length; j++ ){
+			for(int j =0; j< buttonsMode.length; j++ ){
 				buttonsState[j] = false;
-				buttonMode[j] = TRIGGER;						// en principio van a ser todos triggers
+				buttonsMode[j] = TRIGGER;						// en principio van a ser todos triggers
 			}
 
 		}catch (Exception e){
@@ -238,36 +228,45 @@ public class Joystick extends HIDevice {
 			sright = new PVector();
 
 			pov	= new PVector();
-
+			
+			setCameraMode(CameraMode.FIRST_PERSON);
+			camera.setPosition(new PVector(0, 0, scene.radius() * 6));
 			//Define the translation sensitivities
 			//(0 will disable the translation, a negative value will reverse its direction)
-			setTranslationSensitivity(1, 1, 1);
+//			setTranslationSensitivity(4,4,8);
 			//Define the translation sensitivities
 			//(0 will disable the rotation, a negative value will reverse its orientation)
-			setRotationSensitivity(0.01f, 0.01f, 0.01f);
+			setRotationSensitivity(0.1f, 0.1f, 0.1f);
+			
 			scene.addDevice(this);
 		}
 	}
 
 
-
-
-	public void pre(){
-		System.out.println("bang pre");
+	// hook for automatic update
+	public void draw(){
 		if (available) update();
 		if (DEBUG) print();
 	}
 
 
+	/**
+	 * updates values and eases them out
+	 * on switching from SHIFT to NORMAL released controllers 
+	 * moves towar 0 except if they are on a LOCKED state.
+	 */
+	private void update(){
+
+		for(int j =0; j< buttonsState.length; j++ ){
+			if(buttonsMode[j] == TOGGLE && (device.getButton(j)).pressed())
+				buttonsState[j] = ! buttonsState[j];
+			
+			if(buttonsMode[j] == TRIGGER)
+				buttonsState[j] = (device.getButton(j)).pressed();
+		}
 
 
-
-
-
-	void update(){
-
-
-		if(!shift){
+		if(!isShift()){
 
 			left.set(
 					Util.ease(left.x, xslider.getValue(), easeIn),
@@ -317,151 +316,61 @@ public class Joystick extends HIDevice {
 
 
 		/*
-
-		shift(getButtonState(SHIFT_BUTTON));						
-
-
-		double x = java.lang.Math.pow(X0, 3); 
-		double y = java.lang.Math.pow(Y0, 3); 
-
-		double z = java.lang.Math.pow(Z0, 3);;
-		double r = java.lang.Math.pow(R0, 3);;
-
-
-		if(shift){	
-
-			// si esta en shift, 
-			// actualiza el valor B
-			// y el A se va a cero.
-
-			if(!LEFT_LOCK){
-
-				// SI ESTAN BLOQUEDOS NO ACTUALIZA NADA
-
-				leftAnalog[X][B] = Util.ease(	leftAnalog[X][B], (float)x, easeIn);
-				leftAnalog[Y][B] = Util.ease(	leftAnalog[Y][B], (float)y, easeIn);					
-
-				leftAnalog[X][A] = Util.ease(	leftAnalog[X][A],	0, easeOut);
-				leftAnalog[Y][A] = Util.ease(	leftAnalog[Y][A],	0, easeOut);		
-
-			}
-
-
-			if(!RIGHT_LOCK){
-
-				// SI ESTAN BLOQUEDOS NO ACTUALIZA NADA
-
-				rightAnalog[X][B] = Util.ease(	rightAnalog[X][B], (float)r, easeIn);
-				rightAnalog[Y][B] = Util.ease(	rightAnalog[Y][B], (float)z, easeIn);					
-
-				rightAnalog[X][A] = Util.ease( rightAnalog[X][A],	0, easeOut);
-				rightAnalog[Y][A] = Util.ease( rightAnalog[Y][A],	0, easeOut);		
-
-			}
-
-
-		}else{
-
-			// si no esta en shift
-			// entonces actualizo los A
-			// los B van a cero
-
-			if(!LEFT_LOCK){									
-
-				leftAnalog[X][A] = Util.ease(	leftAnalog[X][A], (float)x, easeIn);	
-				leftAnalog[Y][A] = Util.ease(	leftAnalog[Y][A], (float)y, easeIn);		
-
-				leftAnalog[X][B] = Util.ease(	leftAnalog[X][B], 0, easeOut);
-				leftAnalog[Y][B] = Util.ease(	leftAnalog[Y][B], 0, easeOut);	
-
-			}
-
-			if(!RIGHT_LOCK){		
-
-				rightAnalog[X][A] = Util.ease( rightAnalog[X][A], (float)r, easeIn);	
-				rightAnalog[Y][A] = Util.ease( rightAnalog[Y][A], (float)z, easeIn);		
-
-				rightAnalog[X][B] = Util.ease(	rightAnalog[X][B], 0, easeOut);
-				rightAnalog[Y][B] = Util.ease(	rightAnalog[Y][B], 0, easeOut);		    						
-			}
-		}
-
-
-		if(CURRENT_POV0 > 0.01f){
-
-			if(!shift){
-				// Si no esta en shift actualiza los A
-
-				pov[X][A] = Util.ease(pov[X][A], -1.f * (float) Math.cos(CURRENT_POV0) , easeIn ); 
-				pov[Y][A] = Util.ease(pov[Y][A], -1.f * (float) Math.sin(CURRENT_POV0) , easeIn );
-
-
-				pov[X][B] = Util.ease(pov[X][B], 0, easeIn ); 
-				pov[Y][B] = Util.ease(pov[Y][B], 0, easeIn );
-
-			}else{
-
-				pov[X][B] = Util.ease(pov[X][B], -1.f * (float) Math.cos(CURRENT_POV0) , easeIn ); 
-				pov[Y][B] = Util.ease(pov[Y][B], -1.f * (float) Math.sin(CURRENT_POV0) , easeIn );			
-
-
-				pov[X][A] = Util.ease(pov[X][A], 0, easeIn ); 
-				pov[Y][A] = Util.ease(pov[Y][A], 0, easeIn );
-
-			}
-
-
-		}else{
-
-
-
-				pov[X][A] = Util.ease(pov[X][A], 0, easeIn ); 
-				pov[Y][A] = Util.ease(pov[Y][A], 0, easeIn );
-
-
-				pov[X][B] = Util.ease(pov[X][B], 0, easeIn ); 
-				pov[Y][B] = Util.ease(pov[Y][B], 0, easeIn );
-
-
-
-		}
-
 		 */
 
 	}
 
 
-	// LEFT ANALOG
-	public float feedXTranslation() {
-		return left.x;
+	private boolean isShift() {
+		return buttonsState[SHIFT_BUTTON];
 	}
-	public float feedYTranslation() {
-		return left.y;
-	}
-	public float feedZTranslation() {
-		return sleft.y;
-	}
-	
-	// RIGHT ANALOG
-	public float feedXRotation() {
-		return right.y;
-	}
-	public float feedYRotation() {
-		return right.x;
-	}
-	public float feedZRotation() {
-		return sright.y;
-	}
-	
 
+
+//	// LEFT ANALOG
+//	public float feedXTranslation() {
+//		return left.x;
+//	}
+//	public float feedYTranslation() {
+//		return left.y;
+//	}
+//	public float feedZTranslation() {
+//		return -sleft.y;
+//	}
+//
+//	// RIGHT ANALOG
+//	public float feedXRotation() {
+//		return right.y;
+//	}
+//	public float feedYRotation() {
+//		return right.x;
+//	}
+//	public float feedZRotation() {
+//		return sright.x;
+//	}
+//	
 	
-	
-	
-	public PVector getLeftAnalog(){
-		return left;
-	}
-	public PVector rightAnalog(){
-		return right;
+	protected void handleCamera() {
+		System.out.println(camera.fieldOfView() / PApplet.TWO_PI);
+		
+		PVector p = camera.position();
+		p.x += left.x * translationSensitivity.x;
+		p.y += left.y * translationSensitivity.y;
+		p.z += right.y * translationSensitivity.z;
+		camera.setPosition(p);
+		
+		float fov = camera.fieldOfView();
+		fov += PApplet.TWO_PI * 0.001f * (right.x);
+		camera.setFieldOfView(fov);
+		
+		
+		theta += sright.x * 0.01f;
+		phi += sright.y * 0.01f;
+		
+		System.out.println(theta);
+//		Quaternion q = new Quaternion();
+//		q.fromAxisAngle(new PVector(PApplet.TWO_PI * sright.y, PApplet.TWO_PI * sright.x, 0), 1);
+		camera.setOrientation(theta, phi);
+		
 	}
 
 
@@ -469,11 +378,11 @@ public class Joystick extends HIDevice {
 	// SHIFT
 	/////////////////////////////////////////////////////
 
-	public void shift(boolean shiftButton){	    	
+	private void shift(boolean shiftButton){	    	
 		this.shift = shiftButton;
 	}
 
-	public void setShiftButton(int button){	    	
+	private void setShiftButton(int button){	    	
 		SHIFT_BUTTON = button;
 	}
 
@@ -484,14 +393,13 @@ public class Joystick extends HIDevice {
 	/////////////////////////////////////////////////////
 
 
-	public void leftLock(boolean lock){
+	private void leftLock(boolean lock){
 		LEFT_LOCK = lock;
 	}
 
-	public void rightLock(boolean lock){
+	private void rightLock(boolean lock){
 		RIGHT_LOCK = lock;
 	}
-
 
 
 	/////////////////////////////////////////////////////
@@ -499,20 +407,14 @@ public class Joystick extends HIDevice {
 	/////////////////////////////////////////////////////
 
 
-	public void setToggle(int button){	    	
-		buttonMode[button] = TOGGLE;	    	
+	public void setButtonMode(int button , int mode){	    	
+		buttonsMode[button] = mode;				    	
 	}
 
-	public void setTrigger(int button){	    	
-		buttonMode[button] = TRIGGER;	    	
-	}
 
 	public boolean getButtonState(int buttonNumber){
 		return buttonsState[buttonNumber];
 	}
-
-
-
 
 
 

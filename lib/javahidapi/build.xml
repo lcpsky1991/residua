@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="hidapi">
+    <property environment="env"/>
+    <property name="ANT_HOME" value="../../../java/apache-ant-1.7.1"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="hidapi.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${ANT_HOME}"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete dir="doc/api"/>
+    </target>
+
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac includeantruntime="true" debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="hidapi.classpath"/>
+        </javac>
+    </target>
+
+    <target name="jni-stubs" depends="build-project">
+      <javah destdir="jni-stubs" classpath="bin">
+        <class name="com.codeminders.hidapi.HIDManager"/>
+        <class name="com.codeminders.hidapi.HIDDevice"/>
+        <class name="com.codeminders.hidapi.HIDDeviceInfo"/>
+      </javah>    
+    </target>
+
+    <target name="print-jni-types" depends="build-project">
+      <exec executable="javap">
+        <arg value="-private" />
+        <arg value="-s" />
+        <arg value="-classpath" />
+        <arg value="bin" />
+        <arg value="com.codeminders.hidapi.HIDDevice" />
+      </exec>
+
+      <exec executable="javap">
+        <arg value="-private" />
+        <arg value="-s" />
+        <arg value="-classpath" />
+        <arg value="bin" />
+        <arg value="com.codeminders.hidapi.HIDManager" />
+      </exec>
+
+      <exec executable="javap">
+        <arg value="-private" />
+        <arg value="-s" />
+        <arg value="-classpath" />
+        <arg value="bin" />
+        <arg value="com.codeminders.hidapi.HIDDeviceInfo" />
+      </exec>
+
+    </target>
+
+    <target name="run" depends="build-project">
+        <java classname="com.codeminders.hidapi.HIDAPITest" failonerror="true" fork="yes">
+            <classpath refid="hidapi.classpath"/>
+            <jvmarg value="-Djava.library.path=${basedir}/mac"/>
+        </java>
+    </target>
+
+    <target name="jar" depends="build-project">
+      <jar destfile="bin/hidapi.jar"
+           basedir="bin"
+           includes="com/codeminders/hidapi/**"
+           excludes="**/HIDAPITest.class"
+           />
+    </target>
+    
+    <target name="javadoc">
+      <javadoc
+         destdir="doc/api"
+         author="true"
+         version="true"
+         use="true"
+         windowtitle="HID API">
+        
+        <fileset dir="src" defaultexcludes="yes">
+          <include name="com/codeminders/hidapi/**"/>
+          <exclude name="com/codeminders/hidapi/*Test*"/>
+        </fileset>
+
+      </javadoc>
+    </target>
+
+</project>
