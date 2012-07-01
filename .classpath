@@ -2,6 +2,11 @@
 <classpath>
 	<classpathentry excluding="opengl/" kind="src" path="src"/>
 	<classpathentry kind="src" path="processing"/>
+	<classpathentry kind="src" path="lib/procontroll/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="residua-2012/lib/procontroll/library"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jAppleMunuBar/jAppleMenuBar/build/Debug/jAppleMenuBar.jar">
 		<attributes>

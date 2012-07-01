@@ -3,8 +3,10 @@ package residua;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.opengl.PGraphics3D;
+import procontroll.ControllIO;
 import remixlab.proscene.Camera;
 import remixlab.proscene.Scene;
+import residua.utils.Joystick;
 
 public class Residua extends PApplet {
 
@@ -18,7 +20,10 @@ public class Residua extends PApplet {
 
 	Scene s;
 	Camera c;
-
+	ControllIO controll;
+	Joystick j;
+	
+	
 	public void setup(){
 
 		size(1440,900, P3D);
@@ -28,24 +33,35 @@ public class Residua extends PApplet {
 		s.disableKeyboardHandling();
 		
 		c = new Camera(s, false);
+		j = new Joystick(s);
 		//c.attachToP5Camera();
+		//controll = ControllIO.getInstance(this);
+		
 		
 
 	}
 
+	
 	public void draw(){
 		background(127);
 		noFill();
 
-		println(c.position().toString());
+		
+
 		
 		
 		//re-position the camera:
-		c.setUpVector(new PVector(0, -1, 0));
-		c.setPosition( new PVector( sin(frameCount * .0125f) * width, 0, -200) );
-		c.lookAt( s.center() );
-		s.setCamera(c);
+		// TODO setear joystink a la camara.
+//		c.setUpVector(new PVector(0, -1, 0));
+//		c.setPosition(new PVector(j.getLeftAnalog().x * width , j.getLeftAnalog().y * height ,-200));
+//		c.lookAt( s.center() );
+//		s.setCamera(c);
 
+		// debug camara
+		//println(c.position().toString());
+		
+		
+		
 		// luego todo lo que hago entre push y pop queda abstraido.
 		pushMatrix();
 		translate(0,0,sin(frameCount * .1f) * 100);
