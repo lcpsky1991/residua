@@ -47,8 +47,8 @@ public class Residua extends PApplet {
 		c = new Camera(s, false);
 		j = new Joystick(s);
 		
-		s.setAxisIsDrawn(false);
-		s.setGridIsDrawn(false);
+		s.setAxisIsDrawn(true);
+		s.setGridIsDrawn(true);
 		
 		openNI = new OpenNI(this);
 
@@ -95,8 +95,11 @@ public class Residua extends PApplet {
 		popMatrix();
 		
 		pushMatrix();
-		scale(.5f);
-		openNI.drawDepth();
+		translate(width/2, height/2,0);
+		scale(.1f);
+		// openNI.drawDepth();
+		rotateX(PI);
+		openNI.drawUser();
 		popMatrix();
 		
 		
