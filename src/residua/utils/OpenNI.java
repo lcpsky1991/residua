@@ -1,105 +1,97 @@
 package residua.utils;
 import SimpleOpenNI.*;
 import processing.core.*;
+import processing.opengl.PShape3D;
 
 public class OpenNI {
 
 	public SimpleOpenNI  context;
 	PApplet parent;
+	PShape3D shape;
 
 	public  OpenNI(PApplet parent)
 	{
 
 		this.parent = parent;
-		// context = new SimpleOpenNI(this);
-		context = new SimpleOpenNI(parent, SimpleOpenNI.RUN_MODE_MULTI_THREADED);
-
+		
+		context = new SimpleOpenNI(parent, SimpleOpenNI.RUN_MODE_MULTI_THREADED);		
 		// enable depthMap generation 
 		context.enableDepth();
-
 		// enable skeleton generation for all joints
-		context.enableUser(SimpleOpenNI.SKEL_PROFILE_ALL);
-
+//		context.enableUser(SimpleOpenNI.SKEL_PROFILE_ALL);
 		// enable the scene, to get the floor
-		//context.enableScene();
-		context.enableScene(400,400,400);
-
-		parent.registerPre(this);
+		context.enableScene(100,100,300);
+		// registro el pre con mi propia clase
+		//parent.registerPre(this);
+		userColors =  new int [20];
+		userColors[0] = parent.color(255,0,0);
+		userColors[1] = parent.color(0,255,0);
+		userColors[2] = parent.color(0,0,255);
+		userColors[3] = parent.color(255,255,0);
+		userColors[4] = parent.color(255,0,255);
+		userColors[5] = parent.color(0,255,255);
 		
-
-
 	}
 
 	public void pre(){
 		// update the cam
 		context.update();
-
-
 	}
 
-	PShape body; // = parent.createShape(PApplet.POINTS);
+
+	int[] userColors; 
+	//PShape body; // = parent.createShape(PApplet.POINTS);
 	public void drawUser(){
 
-		int userCount = context.getNumberOfUsers();
-		System.out.println("num users: " + userCount);
-		int[] userMap = null;
-		int steps = 3;
-		int index = 0;
-		//int[]   depthMap = context.depthMap();
-		PVector[]   realWorldMap = context.depthMapRealWorld();
-		PVector realWorldPoint;
-		
-		
-		
-		if(userCount > 0)
-		{
-			body = parent.createShape();
-			userMap = context.getUsersPixels(SimpleOpenNI.USERS_ALL);
-		}
+		  int[]   depthMap = context.depthMap();
+		  int     steps   = 3;  // to speed up the drawing, draw every third point
+		  int     index;
+		  PVector realWorldPoint;
+		 
+		 // translate(0,0,-1000);  // set the rotation center of the scene 1000 infront of the camera
 
-		
-		
-		for(int y=0;y < context.depthHeight(); y+=steps)
-		{
-			for(int x=0;x < context.depthWidth(); x+=steps)
-			{
-				
-				index = x + y * context.depthWidth();
-					
-					// check if there is a user
-					//body.beginContour();
-					if(userMap != null && userMap[index] != 0)
-					{  // calc the user color
-						//int colorIndex = userMap[index] % userColors.length;
-					//	body.vertex(realWorldPoint.x,realWorldPoint.y,realWorldPoint.z);
-						// get the realworld points
-						realWorldPoint = realWorldMap[index];
-							
-					parent.point(realWorldPoint.x,realWorldPoint.y,realWorldPoint.z);;
-						//System.out.println(realWorldPoint.toString());
-					}
-					
-					
-						// default color
-						//parent.stroke(100); 
-					
-				}
-			} 
-		
-		
-		//body.endContour();
-		if(body != null){
-			body.end();
-			parent.shape(body);
-		}
-		//body.draw(parent.g);
-		
+		  int userCount = context.getNumberOfUsers();
+		  int[] userMap = null;
+		  if(userCount > 0)
+		  {
+		    userMap = context.getUsersPixels(SimpleOpenNI.USERS_ALL);
+		  }
+		  
+		  PShape3D body = (PShape3D) parent.createShape(parent.POINTS);
+		  
+		  for(int y=0;y < context.depthHeight();y+=steps)
+		  {
+		    for(int x=0;x < context.depthWidth();x+=steps)
+		    {
+		      index = x + y * context.depthWidth();
+		      if(depthMap[index] > 0)
+		      { 
+		        // get the realworld points
+		        realWorldPoint = context.depthMapRealWorld()[index];
+		        
+		        // check if there is a user
+		        if(userMap != null && userMap[index] != 0)
+		        {  // calc the user color
+		          int colorIndex = userMap[index] % userColors.length;
+		          parent.stroke(userColors[colorIndex]); 
+		        }
+		        else
+		          // default color
+		        parent.stroke(100); 
+		        body.vertex(realWorldPoint.x,- realWorldPoint.y,realWorldPoint.z);
+		      }
+		    } 
+		  } 
+			
+		  body.end();
+		  parent.shape(body);
 	}
 
 	public void drawDepth()
 	{
 
 		// draw depthImageMap
+		if(context.depthImage() != null)
 		parent.image(context.depthImage(), -context.depthImage().width / 2 ,-context.depthImage().height/2);
 
 		// draw the skeleton if it's available
