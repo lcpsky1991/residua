@@ -25,5 +25,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="residua-2012/lib/SimpleOpenNI/library"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/log4j/library/log4j-1.2.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

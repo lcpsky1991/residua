@@ -359,7 +359,7 @@ public class SixAxisJoystick extends HIDevice {
 //	
 	
 	protected void handleCamera() {
-		System.out.println(camera.fieldOfView() / PApplet.TWO_PI);
+//		System.out.println(camera.fieldOfView() / PApplet.TWO_PI);
 		
 		PVector p = camera.position();
 		p.x += left.x * translationSensitivity.x;
@@ -375,7 +375,7 @@ public class SixAxisJoystick extends HIDevice {
 		theta += sright.x * 0.01f;
 		phi += sright.y * 0.01f;
 		
-		System.out.println(theta);
+//		System.out.println(theta);
 //		Quaternion q = new Quaternion();
 //		q.fromAxisAngle(new PVector(PApplet.TWO_PI * sright.y, PApplet.TWO_PI * sright.x, 0), 1);
 		camera.setOrientation(theta, phi);

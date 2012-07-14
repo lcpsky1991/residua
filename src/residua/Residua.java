@@ -1,5 +1,8 @@
 package residua;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -30,15 +33,24 @@ public class Residua extends PApplet {
 	Scene 					proscene;
 	Camera 					camera;
 	ControllIO 				hid_driver;
-	SixAxisJoystick 				gamepad;
+	SixAxisJoystick 		gamepad;
 	
 	OpenNI 					kinect;
 	
 	PFont 					helvetica;
+	Universe				universe;
+	
+	public static Logger logger = Logger.getLogger(Residua.class);
 	
 	public void setup(){
-
+		
+		//System.exit(0);
+		PropertyConfigurator.configure("./data/logs/logger.properties");
+		logger.trace("inciando setup");
+		
 		size(1440,900, P3D);
+		
+
 
 		frame.setLocation(-1440, 150);
 
@@ -67,6 +79,9 @@ public class Residua extends PApplet {
 		textSize(14);
 		
 		g3 = (PGraphics3D)g;
+		
+		universe = new Universe(this);
+		universe.setup();
 	}
 
 	
