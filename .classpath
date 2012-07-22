@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="opengl/" kind="src" path="src"/>
+	<classpathentry excluding="opengl/|toxiclibs/src/audio/toxi/|toxiclibs/src.audio/toxi/|toxiclibs/src/core/toxi/|toxiclibs/src.core/toxi/" kind="src" path="src"/>
 	<classpathentry kind="src" path="processing"/>
 	<classpathentry kind="src" path="lib/procontroll/src">
 		<attributes>
@@ -8,6 +8,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="lib/SimpleOpenNI/examples/eclipse"/>
+	<classpathentry kind="src" path="src/toxiclibs/src.audio/toxi"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jAppleMunuBar/jAppleMenuBar/build/Debug/jAppleMenuBar.jar">
 		<attributes>
@@ -26,5 +27,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/log4j/library/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/osc/oscP5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

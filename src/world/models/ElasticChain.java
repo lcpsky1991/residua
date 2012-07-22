@@ -2,6 +2,8 @@ package models;
 
 import java.util.ArrayList;
 
+import models.ElasticWord;
+
 import p5.Residua;
 import processing.core.PApplet;
 import processing.core.PVector;

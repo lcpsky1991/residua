@@ -141,7 +141,7 @@ public class SixAxisJoystick extends HIDevice {
 	private PVector sright;	  
 
 	private PVector pov;
-	private float 	fov = 0.25f;
+	private float 	fov = 1.f;
 	private boolean[] buttonsState;					//   	
 	private int[] buttonsMode;					// TRIGGER or TOGGLE (remains in the on state)
 
@@ -237,7 +237,7 @@ public class SixAxisJoystick extends HIDevice {
 			pov	= new PVector();
 			
 			setCameraMode(CameraMode.FIRST_PERSON);
-			camera.setPosition(new PVector(0, 0, scene.radius() * 6));
+			camera.setPosition(new PVector(0, 0, 1200));
 			camera.setFieldOfView(fov);
 
 			//Define the translation sensitivities
@@ -378,7 +378,17 @@ public class SixAxisJoystick extends HIDevice {
 //		System.out.println(theta);
 //		Quaternion q = new Quaternion();
 //		q.fromAxisAngle(new PVector(PApplet.TWO_PI * sright.y, PApplet.TWO_PI * sright.x, 0), 1);
+		
 		camera.setOrientation(theta, phi);
+		
+	//	camera.lookAt(new PVector(theta, phi));
+		
+		// botones;
+		
+		if(buttonsState[0]) {
+			camera.setPosition(new PVector(0,0,200));
+			camera.lookAt(new PVector());
+		}
 		
 	}
 

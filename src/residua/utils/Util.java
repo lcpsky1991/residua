@@ -3,6 +3,7 @@ import java.io.*;
 
 import processing.core.PMatrix3D;
 import processing.core.PVector;
+import traer.physics.Vector3D;
 
 public class Util {
 
@@ -31,6 +32,10 @@ public class Util {
 	                                float ostart, float ostop) {
 		  float val = ostart + (ostop - ostart) * ((value - istart) / (istop - istart)); 
 		  return val;
+	  }
+	  
+	  static public PVector getPVector(Vector3D v){
+		  return new PVector(v.x(), v.y(), v.z());
 	  }
 
 
