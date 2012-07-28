@@ -19,7 +19,7 @@ public class Wander3D extends PVector {
 	
 	private float phase = 0;
 	private float amp = 1;
-	private float freq = .01f;
+	private float freq = .1f;
 	private float offset = 0;
 	
 	private java.util.Random rand;
@@ -35,9 +35,9 @@ public class Wander3D extends PVector {
 		switch (type){
 		
 		case SINE:
-			xw = new SineWave( rand.nextFloat() * parent.TWO_PI, freq, amp, offset);
-			yw = new SineWave( rand.nextFloat() * parent.TWO_PI, freq, amp, offset);
-			zw = new SineWave( rand.nextFloat() * parent.TWO_PI, freq, amp, offset);
+			xw = new SineWave( rand.nextFloat() * parent.TWO_PI, rand.nextFloat() *  freq, amp, offset);
+			yw = new SineWave( rand.nextFloat() * parent.TWO_PI, rand.nextFloat() * freq, amp, offset);
+			zw = new SineWave( rand.nextFloat() * parent.TWO_PI, rand.nextFloat() * freq, amp, offset);
 			break;
 			
 		default:

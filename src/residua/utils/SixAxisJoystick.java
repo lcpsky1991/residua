@@ -37,9 +37,11 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import procontroll.*;
 import processing.core.*;
+import remixlab.proscene.Frame;
 import remixlab.proscene.HIDevice;
 import remixlab.proscene.Quaternion;
 import remixlab.proscene.Scene;
+import residua.Universe;
 
 /**
  * ver: http://code.google.com/p/proscene/wiki/HIDevice
@@ -95,7 +97,7 @@ public class SixAxisJoystick extends HIDevice {
 
 
 	private final boolean DEBUG = false;
-	private boolean available = false;
+	private boolean available = true;
 
 	////////////////////////////////////////////////////////////
 	// handy static constants
@@ -172,7 +174,7 @@ public class SixAxisJoystick extends HIDevice {
 	public SixAxisJoystick(Scene scene){
 
 		super(scene);
-		scene.parent.registerDraw(this);
+		scene.parent.registerPre(this);
 
 		controll = ControllIO.getInstance(scene.parent);
 		controll.printDevices();
@@ -201,7 +203,7 @@ public class SixAxisJoystick extends HIDevice {
 			device = controll.getDevice(deviceId);
 			available = true;
 
-			device.setTolerance(0.06f);
+			device.setTolerance(0.1f);
 
 			buttonsState = new boolean[device.getNumberOfButtons()];					// creo un array con todos los botones
 			buttonsMode = new int[device.getNumberOfButtons()];					// creo el flag de toggle para los botones
@@ -248,12 +250,13 @@ public class SixAxisJoystick extends HIDevice {
 //			setRotationSensitivity(0.1f, 0.1f, 0.1f);
 			
 			scene.addDevice(this);
+			//scene.avatar();
 		}
 	}
 
 
 	// hook for automatic update
-	public void draw(){
+	public void pre(){
 		if (available) update();
 		if (DEBUG) print();
 	}
@@ -358,30 +361,47 @@ public class SixAxisJoystick extends HIDevice {
 //	}
 //	
 	
+	//PVector target =  new PVector();
+	
+	Frame target =  new Frame();
+	PVector targetPosition = new PVector();
+	PVector p = new PVector();
 	protected void handleCamera() {
 //		System.out.println(camera.fieldOfView() / PApplet.TWO_PI);
+
+		// targetPosition = target.position();
+		targetPosition.x += sright.x * 5;
+		targetPosition.y += sright.y * 5;
+		targetPosition.z += 50;
 		
-		PVector p = camera.position();
+		target.position().set(targetPosition);
+
+		if(true){
+
+			p = camera.position();
+		
 		p.x += left.x * translationSensitivity.x;
 		p.y += left.y * translationSensitivity.y;
 		p.z += right.y * translationSensitivity.z;
+		
 		camera.setPosition(p);
 		
 		fov = camera.fieldOfView();
 		fov += PApplet.TWO_PI * 0.001f * (right.x);
 		camera.setFieldOfView(fov);
 		
+		System.out.println(sright.y);
 		
-		theta += sright.x * 0.01f;
-		phi += sright.y * 0.01f;
+		theta = sright.x * 0.01f;
+		phi = sright.y 	* 0.01f;
 		
-//		System.out.println(theta);
-//		Quaternion q = new Quaternion();
-//		q.fromAxisAngle(new PVector(PApplet.TWO_PI * sright.y, PApplet.TWO_PI * sright.x, 0), 1);
-		
-		camera.setOrientation(theta, phi);
-		
-	//	camera.lookAt(new PVector(theta, phi));
+		camera.frame().rotateAroundPoint(new Quaternion(new PVector(0,1,0), theta), scene.center());
+		camera.frame().rotateAroundPoint(new Quaternion(new PVector(1,0,0), phi), scene.center());
+		//camera.setOrientation(theta, phi);
+		}else{
+			
+			
+		}
 		
 		// botones;
 		

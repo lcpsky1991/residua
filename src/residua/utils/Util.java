@@ -1,6 +1,7 @@
 package residua.utils;
 import java.io.*;
 
+import processing.core.PApplet;
 import processing.core.PMatrix3D;
 import processing.core.PVector;
 import traer.physics.Vector3D;
@@ -11,8 +12,13 @@ public class Util {
 	}
 	
 	
-	public static float ease(float current, float value, float factor){		
+	public static float ease(float current, float value, float factor){
+		
+		float sign = (current == 0.0F) ? 0.0F : (current > 0.0F) ? 1.0F : -1.0F;
+		
 		current = value * factor + ( 1 - factor) * current;
+		// current = sign * PApplet.constrain(current, 0.1f, 1);
+		current = (current > -0.01F && current < 0.01) ? 0: current;
 		return current;
 	}
 	

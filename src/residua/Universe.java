@@ -1,5 +1,8 @@
 package residua;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import remixlab.proscene.Frame;
 import remixlab.proscene.Scene;
 import structures.ElasticRibbon;
@@ -12,6 +15,8 @@ import models.Sphere;
 
 import org.apache.log4j.*;
 
+import oscP5.OscMessage;
+
 
 // controlador
 
@@ -19,91 +24,85 @@ public class Universe {
 	
 	private SineWave sine;
 	private ParticleSystem ps;
+	private float psDrag = 0.1f;
 	
 	private Frame origin;
 	private PApplet parent;
 	private Scene proscene;
 	private Sphere s;
 //	private ElasticWord word;
-	private ElasticWordCreator ewc;
+	private ElasticWordCreator elasticWordCreator;
 	
 	private PFont helvetica;
-	private Entity e;
+//	private Magnet e;
 	
-	private Wander3D w;
+//	private Wander3D w;
 	
+	private Skeletor skeletor ;
 	
 	
 	public Universe(PApplet parent){
 		
 		
 		this.parent = parent;
+		parent.registerPre(this);
 		this.proscene = ((Residua) parent).getCurrentScene(); 
+		
 		helvetica = parent.loadFont("Helvetica-Bold-48.vlw");
-		ps = new ParticleSystem(0,0,0,0.1f);
-		s = new Sphere(this, 0, 0, 0, 0);
 		
-		ewc = new ElasticWordCreator();
-		e = new Entity();
+		ps = new ParticleSystem(0,0,0,psDrag);
 		
-//		word = new ElasticWord(this);
-		w = new Wander3D(parent);
+//		s = new Sphere(this, 0, 0, 0, 0);
+		
+		elasticWordCreator = new ElasticWordCreator(this);
+
+		skeletor = new Skeletor(this);
 		
 		
 		
 	}
 	
 	public void setup(){
+
 		
+		ArrayList<String> comedy = TextGenerator.readLinesFromFile("./data/inferno2.txt");
 		
-//		word.makeWord("qwertyuiopasdfghjklzxcvbnm", helvetica, 0, 0, 0);
-//		word.setScale(1);
-		ewc.setup(this);
-		
-		PVector random = PVector.random3D();
-		random.mult(100);
-		
-		ewc.createWord("Diego Maradona", new PVector(parent.random(100), parent.random(100), parent.random(100)));
-		ewc.createWord("graciela alfano", new PVector(parent.random(100), parent.random(100), parent.random(100)));
-		ewc.createWord("david bowie", new PVector(parent.random(100), parent.random(100), parent.random(100)));
-		
-		sine =  new SineWave(0, .01f, 1, 1f);
-		
-		e.setup(this, new PVector());
-		e.makeEntity();
-		
-		for(int i = 0 ; i < ewc.size(); i ++){
-			e.attract(ewc.get(i).getEnd());
+		for(Iterator<String> i = comedy.iterator(); i.hasNext() ; ){
+			elasticWordCreator.createWord(i.next(), new PVector(parent.random(-100,100),parent.random(-100,100),parent.random(-100,100) ));			
 		}
 		
 		
-		w.setMagnitude(100);
+		for(Iterator<ElasticWord> i = elasticWordCreator.elasticWord.iterator(); i.hasNext(); ){
+
+			Particle p = i.next().getEnd();
+			// linkeo todas las palabras con todos los magnetos del eskeleto
+			for(int o = 0; o < skeletor.magnets.size() ; o++){
+				skeletor.magnets.get(o).attract(p);	
+			}
+		}
+		
+		
 	}
 	
-	public void update(){
+	public void pre(){
+		update();
+		
+	}
+	
+	private void update(){
 		ps.tick(.1f);
-		e.setPosition(w);
-		//System.out.println(e.origin.position().toString());
+		skeletor.update();
 	}
-	
-	Vector3D vel = new Vector3D();
-	
+		
 	public void render(){
 			
 			parent.pushStyle();
 			parent.pushMatrix();
 			
-			parent.fill(0);
 			
-			//word.render();
-			
-			
-			e.render();
-			
-			float f = parent.frameCount * 0.01f;
-			vel.set(parent.noise(f,.1f,.1f) * 100, parent.noise(.1f,f,.1f)*100, parent.noise(.1f,.1f,f)*100);
-			//word.getEnd().position().set(vel);
-			ewc.render();
+//			elasticWordCreator.render();
+			skeletor.render();
+
 			
 			parent.popStyle();
 			parent.popMatrix();
@@ -148,5 +147,21 @@ public class Universe {
 	}
 	public PFont getFontReference(){
 		return helvetica;
+	}
+	
+//	public int addNewText(String text){
+//		elasticWordCreator.createWord(text, new PVector(parent.random(100), parent.random(100), parent.random(100)));
+//		skeletor.setMagnetInfluenceTo(elasticWordCreator.get(elasticWordCreator.size() - 1).getEnd());
+//		return elasticWordCreator.size();
+//	}
+	
+//	public void setMagnetics(){
+//		for(int i = 0 ; i < elasticWordCreator.size(); i ++){
+//			//e.attract(ewc.get(i).getEnd());
+//		}
+//	}
+
+	public void receiveMessage(OscMessage msg) {
+		skeletor.parseMessage(msg);
 	}
 }

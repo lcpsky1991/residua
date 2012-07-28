@@ -30,7 +30,7 @@ public class ElasticWord {
 	String word;
 	PFont font;
 
-	int fontSize = 14;
+	int fontSize = 6;
 	
 	float  springStrenght = 10;
 	float  mass = 4f;
@@ -106,13 +106,13 @@ public class ElasticWord {
 				PVector a = Util.getPVector(particles[i-1].position());
 				PVector b = Util.getPVector(particles[i].position());
 				distance = PVector.sub(b, a);				
-				springs[i-1] = ps.makeSpring(particles[i-1] , particles[i], springStrenght, springDamp, distance.mag());
+				springs[i-1] = ps.makeSpring(particles[i-1] , particles[i], springStrenght * massVariance, springDamp, distance.mag());
 				
 				x0 = x1;
 			}
 			
 			
-			System.out.println(word.charAt(i) + " : " + x1 + " : dist: " + distance.mag() );
+//			System.out.println(word.charAt(i) + " : " + x1 + " : dist: " + distance.mag() );
 			
 			
 		}

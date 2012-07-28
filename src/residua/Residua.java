@@ -1,5 +1,10 @@
 package residua;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -28,57 +33,46 @@ public class Residua extends PApplet {
 		PApplet.main(new String[] {  "residua.Residua" });
 
 	}
-	
+
 	public static final boolean debug = false;
 
 	PMatrix3D 				currentCameraMatrix;
 	PGraphics3D 			g3; 
-
+	OscP5 					oscP5;
 	Scene 					proscene;
 	Camera 					camera;
 	ControllIO 				hid_driver;
 	SixAxisJoystick 		gamepad;
-
-	OpenNI 					kinect;
-
-	PFont 					helvetica;
 	Universe				universe;
 
-	OscP5 oscP5;
-	
+	PFont 					helvetica;
+
+
 	public static Logger logger = Logger.getLogger(Residua.class);
-	
 
 	public void setup(){
 
-		//System.exit(0);
+
 		PropertyConfigurator.configure("./data/logs/logger.properties");
 		logger.trace("inciando setup");
 
 		size(1024,768, P3D);
-
-
 
 		frame.setLocation(-1440, 150);
 
 		proscene = new Scene(this);
 		proscene.setRadius(200);
 		proscene.camera().setFieldOfView(1.f);
-
-		//s.disableMouseHandling();
 		proscene.disableKeyboardHandling();
 		proscene.setFrameRate(60);
 
 
 		camera = new Camera(proscene, false);
 		gamepad = new SixAxisJoystick(proscene);
-
+		
+		
 		proscene.setAxisIsDrawn(false);
 		proscene.setGridIsDrawn(false);
-
-
-		// kinect = new OpenNI(this);
-
 
 
 		helvetica = loadFont("./data/Helvetica-Bold-48.vlw");
@@ -90,38 +84,42 @@ public class Residua extends PApplet {
 
 		universe = new Universe(this);
 		universe.setup();
+
+		oscP5 = new OscP5(this, "127.0.0.1", 7110);
 		
 		
-		 oscP5 = new OscP5(this, "127.0.0.1", 7110);
 	}
 
 
 	public void draw(){
-
-
-
-
+		
 		background(127);
-		pushMatrix();
-		proscene.drawGrid(proscene.radius(), 20);
-		translate(0, proscene.radius() , 0);
-		rotateX(radians(90));
-		proscene.drawGrid(proscene.radius(), 20);
-		popMatrix();
+		sceneDebug();		
 		noFill();
 
 		lights();
-		
-		universe.update();
-		
 		hint(ENABLE_DEPTH_TEST);
+		
+
 		universe.render();
 		
-		//sceneDebug();		
+		//
 		gui();
 	}
 
 	private void sceneDebug(){
+		
+		
+		pushMatrix();
+		//z plane
+		proscene.drawGrid(proscene.radius(), 20);
+		proscene.drawAxis();
+		//translate(0, proscene.radius() , 0);
+		rotateX(radians(90));
+		proscene.drawGrid(proscene.radius(), 20);
+		popMatrix();
+
+		/*
 
 		pushMatrix();
 		translate(0,0,sin(frameCount * .1f) * 100);
@@ -144,7 +142,8 @@ public class Residua extends PApplet {
 		fill(255,0,0,60);
 		rect(-proscene.radius() * 1,-proscene.radius() * 1,proscene.radius() * 2,proscene.radius() *2);
 		popMatrix();
-
+		*/
+		
 	}
 
 	public void init(){
@@ -162,12 +161,12 @@ public class Residua extends PApplet {
 	void gui() {
 
 		saveState();
-		
+
 		fill(0);
 
 		pushMatrix();
 		pushStyle();
-
+		textSize(14);
 		translate(30,40,0);
 		text("fr: " + frameRate + "\n" +
 				"camera pos: \n" 
@@ -218,10 +217,11 @@ public class Residua extends PApplet {
 
 	public Scene getCurrentScene(){
 		return proscene;
-		
+
 	}
-	
+
 	void oscEvent(OscMessage msg) {
-		  msg.print();
+		//msg.print();
+		universe.receiveMessage(msg);
 	}
 }
