@@ -28,119 +28,119 @@ public class OSCeletonParser {
 			}
 
 			if (msg.get(0).stringValue().equals("head")) {
-				s.headCoords[0] = msg.get(2).floatValue();
-				s.headCoords[1] = msg.get(3).floatValue();
-				s.headCoords[2] = msg.get(4).floatValue();
+				s.headCoords.x = msg.get(2).floatValue();
+				s.headCoords.y = msg.get(3).floatValue();
+				s.headCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("neck")) {
-				s.neckCoords[0] = msg.get(2).floatValue();
-				s.neckCoords[1] = msg.get(3).floatValue();
-				s.neckCoords[2] = msg.get(4).floatValue();
+				s.neckCoords.x = msg.get(2).floatValue();
+				s.neckCoords.y = msg.get(3).floatValue();
+				s.neckCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_collar")) {
-				s.rCollarCoords[0] = msg.get(2).floatValue();
-				s.rCollarCoords[1] = msg.get(3).floatValue();
-				s.rCollarCoords[2] = msg.get(4).floatValue();
+				s.rCollarCoords.x = msg.get(2).floatValue();
+				s.rCollarCoords.y = msg.get(3).floatValue();
+				s.rCollarCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_shoulder")) {
-				s.rShoulderCoords[0] = msg.get(2).floatValue();
-				s.rShoulderCoords[1] = msg.get(3).floatValue();
-				s.rShoulderCoords[2] = msg.get(4).floatValue();
+				s.rShoulderCoords.x = msg.get(2).floatValue();
+				s.rShoulderCoords.y = msg.get(3).floatValue();
+				s.rShoulderCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_elbow")) {
-				s.rElbowCoords[0] = msg.get(2).floatValue();
-				s.rElbowCoords[1] = msg.get(3).floatValue();
-				s.rElbowCoords[2] = msg.get(4).floatValue();
+				s.rElbowCoords.x= msg.get(2).floatValue();
+				s.rElbowCoords.y = msg.get(3).floatValue();
+				s.rElbowCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_wrist")) {
-				s.rWristCoords[0] = msg.get(2).floatValue();
-				s.rWristCoords[1] = msg.get(3).floatValue();
-				s.rWristCoords[2] = msg.get(4).floatValue();
+				s.rWristCoords.x = msg.get(2).floatValue();
+				s.rWristCoords.y = msg.get(3).floatValue();
+				s.rWristCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_hand")) {
-				s.rHandCoords[0] = msg.get(2).floatValue();
-				s.rHandCoords[1] = msg.get(3).floatValue();
-				s.rHandCoords[2] = msg.get(4).floatValue();
+				s.rHandCoords.x = msg.get(2).floatValue();
+				s.rHandCoords.y = msg.get(3).floatValue();
+				s.rHandCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_finger")) {
-				s.rFingerCoords[0] = msg.get(2).floatValue();
-				s.rFingerCoords[1] = msg.get(3).floatValue();
-				s.rFingerCoords[2] = msg.get(4).floatValue();
+				s.rFingerCoords.x = msg.get(2).floatValue();
+				s.rFingerCoords.y = msg.get(3).floatValue();
+				s.rFingerCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_collar")) {
-				s.lCollarCoords[0] = msg.get(2).floatValue();
-				s.lCollarCoords[1] = msg.get(3).floatValue();
-				s.lCollarCoords[2] = msg.get(4).floatValue();
+				s.lCollarCoords.x = msg.get(2).floatValue();
+				s.lCollarCoords.y = msg.get(3).floatValue();
+				s.lCollarCoords.z = msg.get(4).floatValue();
 			}  
 			else if (msg.get(0).stringValue().equals("l_shoulder")) {
-				s.lShoulderCoords[0] = msg.get(2).floatValue();
-				s.lShoulderCoords[1] = msg.get(3).floatValue();
-				s.lShoulderCoords[2] = msg.get(4).floatValue();
+				s.lShoulderCoords.x = msg.get(2).floatValue();
+				s.lShoulderCoords.y = msg.get(3).floatValue();
+				s.lShoulderCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("l_elbow")) {
-				s.lElbowCoords[0] = msg.get(2).floatValue();
-				s.lElbowCoords[1] = msg.get(3).floatValue();
-				s.lElbowCoords[2] = msg.get(4).floatValue();
+				s.lElbowCoords.x = msg.get(2).floatValue();
+				s.lElbowCoords.y = msg.get(3).floatValue();
+				s.lElbowCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("l_wrist")) {
-				s.lWristCoords[0] = msg.get(2).floatValue();
-				s.lWristCoords[1] = msg.get(3).floatValue();
-				s.lWristCoords[2] = msg.get(4).floatValue();
+				s.lWristCoords.x = msg.get(2).floatValue();
+				s.lWristCoords.y = msg.get(3).floatValue();
+				s.lWristCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("l_hand")) {
-				s.lHandCoords[0] = msg.get(2).floatValue();
-				s.lHandCoords[1] = msg.get(3).floatValue();
-				s.lHandCoords[2] = msg.get(4).floatValue();
+				s.lHandCoords.x = msg.get(2).floatValue();
+				s.lHandCoords.y = msg.get(3).floatValue();
+				s.lHandCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("l_finger")) {
-				s.lFingerCoords[0] = msg.get(2).floatValue();
-				s.lFingerCoords[1] = msg.get(3).floatValue();
-				s.lFingerCoords[2] = msg.get(4).floatValue();
+				s.lFingerCoords.x = msg.get(2).floatValue();
+				s.lFingerCoords.y = msg.get(3).floatValue();
+				s.lFingerCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("torso")) {
-				s.torsoCoords[0] = msg.get(2).floatValue();
-				s.torsoCoords[1] = msg.get(3).floatValue();
-				s.torsoCoords[2] = msg.get(4).floatValue();
+				s.torsoCoords.x = msg.get(2).floatValue();
+				s.torsoCoords.y = msg.get(3).floatValue();
+				s.torsoCoords.z = msg.get(4).floatValue();
 			}
 			else if (msg.get(0).stringValue().equals("r_hip")) {
-				s.rHipCoords[0] = msg.get(2).floatValue();
-				s.rHipCoords[1] = msg.get(3).floatValue();
-				s.rHipCoords[2] = msg.get(4).floatValue();
+				s.rHipCoords.x = msg.get(2).floatValue();
+				s.rHipCoords.y = msg.get(3).floatValue();
+				s.rHipCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("r_knee")) {
-				s.rKneeCoords[0] = msg.get(2).floatValue();
-				s.rKneeCoords[1] = msg.get(3).floatValue();
-				s.rKneeCoords[2] = msg.get(4).floatValue();
+				s.rKneeCoords.x = msg.get(2).floatValue();
+				s.rKneeCoords.y = msg.get(3).floatValue();
+				s.rKneeCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("r_ankle")) {
-				s.rAnkleCoords[0] = msg.get(2).floatValue();
-				s.rAnkleCoords[1] = msg.get(3).floatValue();
-				s.rAnkleCoords[2] = msg.get(4).floatValue();
+				s.rAnkleCoords.x = msg.get(2).floatValue();
+				s.rAnkleCoords.y = msg.get(3).floatValue();
+				s.rAnkleCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("r_foot")) {
-				s.rFootCoords[0] = msg.get(2).floatValue();
-				s.rFootCoords[1] = msg.get(3).floatValue();
-				s.rFootCoords[2] = msg.get(4).floatValue();
+				s.rFootCoords.x = msg.get(2).floatValue();
+				s.rFootCoords.y = msg.get(3).floatValue();
+				s.rFootCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("l_hip")) {
-				s.lHipCoords[0] = msg.get(2).floatValue();
-				s.lHipCoords[1] = msg.get(3).floatValue();
-				s.lHipCoords[2] = msg.get(4).floatValue();
+				s.lHipCoords.x = msg.get(2).floatValue();
+				s.lHipCoords.y = msg.get(3).floatValue();
+				s.lHipCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("l_knee")) {
-				s.lKneeCoords[0] = msg.get(2).floatValue();
-				s.lKneeCoords[1] = msg.get(3).floatValue();
-				s.lKneeCoords[2] = msg.get(4).floatValue();
+				s.lKneeCoords.x = msg.get(2).floatValue();
+				s.lKneeCoords.y = msg.get(3).floatValue();
+				s.lKneeCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("l_ankle")) {
-				s.lAnkleCoords[0] = msg.get(2).floatValue();
-				s.lAnkleCoords[1] = msg.get(3).floatValue();
-				s.lAnkleCoords[2] = msg.get(4).floatValue();
+				s.lAnkleCoords.x = msg.get(2).floatValue();
+				s.lAnkleCoords.y = msg.get(3).floatValue();
+				s.lAnkleCoords.z = msg.get(4).floatValue();
 			} 
 			else if (msg.get(0).stringValue().equals("l_foot")) {
-				s.lFootCoords[0] = msg.get(2).floatValue();
-				s.lFootCoords[1] = msg.get(3).floatValue();
-				s.lFootCoords[2] = msg.get(4).floatValue();
+				s.lFootCoords.x = msg.get(2).floatValue();
+				s.lFootCoords.y = msg.get(3).floatValue();
+				s.lFootCoords.z = msg.get(4).floatValue();
 			} 
 		}
 		//	  else if (msg.checkAddrPattern("/new_user") && msg.checkTypetag("i")) {

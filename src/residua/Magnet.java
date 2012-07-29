@@ -50,7 +50,7 @@ public class Magnet {
 
 	public void setPosition(PVector w) {
 		origin.setPosition(w);
-		
+		setPosition(w.x, w.y,w.z);
 	}
 	
 	public void makeEntity(PVector position){

@@ -32,7 +32,7 @@ public class ElasticWord {
 
 	int fontSize = 6;
 	
-	float  springStrenght = 10;
+	float  springStrenght = 40; //10;
 	float  mass = 4f;
 	float  springLength   = 1 ;
 	float  springDamp     = 1f;

@@ -58,8 +58,9 @@ public class Residua extends PApplet {
 
 		size(1024,768, P3D);
 
-		frame.setLocation(-1440, 150);
-
+//		frame.setLocation(-1440, 150);
+		frame.setLocation(0, 0);
+		
 		proscene = new Scene(this);
 		proscene.setRadius(200);
 		proscene.camera().setFieldOfView(1.f);
@@ -83,7 +84,7 @@ public class Residua extends PApplet {
 		g3 = (PGraphics3D)g;
 
 		universe = new Universe(this);
-		universe.setup();
+		//universe.setup();
 
 		oscP5 = new OscP5(this, "127.0.0.1", 7110);
 		
@@ -113,7 +114,7 @@ public class Residua extends PApplet {
 		pushMatrix();
 		//z plane
 		proscene.drawGrid(proscene.radius(), 20);
-		proscene.drawAxis();
+		proscene.drawAxis(100);
 		//translate(0, proscene.radius() , 0);
 		rotateX(radians(90));
 		proscene.drawGrid(proscene.radius(), 20);

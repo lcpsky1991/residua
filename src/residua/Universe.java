@@ -52,28 +52,18 @@ public class Universe {
 		
 		ps = new ParticleSystem(0,0,0,psDrag);
 		
-//		s = new Sphere(this, 0, 0, 0, 0);
+
 		
+		// textos
 		elasticWordCreator = new ElasticWordCreator(this);
-
-		skeletor = new Skeletor(this);
-		
-		
-		
-	}
-	
-	public void setup(){
-
-		
-		ArrayList<String> comedy = TextGenerator.readLinesFromFile("./data/inferno2.txt");
-		
+		ArrayList<String> comedy = TextGenerator.readLinesFromFile("./data/inferno2.txt");		
 		for(Iterator<String> i = comedy.iterator(); i.hasNext() ; ){
 			elasticWordCreator.createWord(i.next(), new PVector(parent.random(-100,100),parent.random(-100,100),parent.random(-100,100) ));			
 		}
 		
-		
+		// eskeleto
+		skeletor = new Skeletor(this);
 		for(Iterator<ElasticWord> i = elasticWordCreator.elasticWord.iterator(); i.hasNext(); ){
-
 			Particle p = i.next().getEnd();
 			// linkeo todas las palabras con todos los magnetos del eskeleto
 			for(int o = 0; o < skeletor.magnets.size() ; o++){
@@ -82,6 +72,11 @@ public class Universe {
 		}
 		
 		
+		
+	}
+	
+	private void setup(){
+	
 	}
 	
 	public void pre(){
@@ -91,16 +86,17 @@ public class Universe {
 	
 	private void update(){
 		ps.tick(.1f);
-		skeletor.update();
+		skeletor.update();		
 	}
 		
 	public void render(){
-			
+
+		
 			parent.pushStyle();
 			parent.pushMatrix();
 			
 			
-//			elasticWordCreator.render();
+			elasticWordCreator.render();
 			skeletor.render();
 
 			
