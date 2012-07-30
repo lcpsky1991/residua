@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-import codeanticode.glgraphics.*;
+
+import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PMatrix3D;
@@ -15,12 +16,14 @@ import processing.core.PVector;
 import remixlab.proscene.Frame;
 import remixlab.proscene.InteractiveFrame;
 import remixlab.proscene.Quaternion;
-import scene.Scene3D;
-import scenes.ResiduaScene3D;
-import utils.Util;
+import residua.Universe;
+//import scene.Scene3D;
+//import scenes.ResiduaScene3D;
+//import utils.Util;
 import traer.physics.Particle;
 import traer.physics.ParticleSystem;
 import traer.physics.Spring;
+
 
 public class ElasticRibbon 	{
 
@@ -52,12 +55,15 @@ public class ElasticRibbon 	{
 	
 
 
+	private PApplet parent;
+	private Frame origin;
+	
+	
+	public ElasticRibbon(Universe universe) {
 
-	public ElasticRibbon(Scene3D scene, ParticleSystem ps) {
+		//super(scene);
 
-		super(scene);
-
-		origin = new InteractiveFrame(scene);
+		origin = new Frame();
 		
 		rotation = new Quaternion();
 		scale = new PVector(1,1,1);
@@ -70,6 +76,7 @@ public class ElasticRibbon 	{
 		for(int i = 0 ; i < segments ; i ++){
 			particles[i] = ps.makeParticle();
 		}
+		
 		springs = new Spring[segments + 1];                       // cada particula se conecta con el de abajo y el de la derecha       
 
 		

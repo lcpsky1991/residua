@@ -17,81 +17,72 @@ import org.apache.log4j.*;
 
 import oscP5.OscMessage;
 
-
-// controlador
-
 public class Universe {
-	
-	private SineWave sine;
-	private ParticleSystem ps;
-	private float psDrag = 0.1f;
 	
 	private Frame origin;
 	private PApplet parent;
-	private Scene proscene;
-	private Sphere s;
+	private Scene scene;
+	
+	private ParticleSystem ps;
+	private float psDrag = 0.1f;
+	private PVector g = new PVector(0,1f,0);
+	
+//	private Sphere s;
 //	private ElasticWord word;
+	private Skeletor skeletor ;
+	
 	private ElasticWordCreator elasticWordCreator;
 	
 	private PFont helvetica;
-//	private Magnet e;
-	
-//	private Wander3D w;
-	
-	private Skeletor skeletor ;
-	
-	
+
 	public Universe(PApplet parent){
 		
 		
 		this.parent = parent;
+		
 		parent.registerPre(this);
-		this.proscene = ((Residua) parent).getCurrentScene(); 
+		
+		this.scene = ((Residua) parent).getCurrentScene(); 
 		
 		helvetica = parent.loadFont("Helvetica-Bold-48.vlw");
 		
-		ps = new ParticleSystem(0,0,0,psDrag);
+		ps = new ParticleSystem(g.x, g.y, g.z, psDrag);
 		
-
-		
-		// textos
 		elasticWordCreator = new ElasticWordCreator(this);
-		ArrayList<String> comedy = TextGenerator.readLinesFromFile("./data/inferno2.txt");		
-		for(Iterator<String> i = comedy.iterator(); i.hasNext() ; ){
-			elasticWordCreator.createWord(i.next(), new PVector(parent.random(-100,100),parent.random(-100,100),parent.random(-100,100) ));			
-		}
-		
-		// eskeleto
 		skeletor = new Skeletor(this);
-		for(Iterator<ElasticWord> i = elasticWordCreator.elasticWord.iterator(); i.hasNext(); ){
-			Particle p = i.next().getEnd();
-			// linkeo todas las palabras con todos los magnetos del eskeleto
-			for(int o = 0; o < skeletor.magnets.size() ; o++){
-				skeletor.magnets.get(o).attract(p);	
-			}
+		init();
+	}
+	
+	private void init(){
+
+		ArrayList<String> comedy = TextGenerator.readLinesFromFile("./data/inferno2.txt");		
+		
+		for(Iterator<String> i = comedy.iterator(); i.hasNext() ; ){
+			elasticWordCreator.createWord(
+					i.next(), 
+					new PVector(parent.random(-scene.radius(),scene.radius()),
+								parent.random(-scene.radius(),scene.radius()),
+								parent.random(-scene.radius(),scene.radius())));			
 		}
-		
-		
-		
-	}
-	
-	private void setup(){
-	
-	}
-	
-	public void pre(){
-		update();
-		
-	}
-	
-	private void update(){
-		ps.tick(.1f);
-		skeletor.update();		
-	}
-		
-	public void render(){
 
 		
+		for(int o = 0; o < skeletor.magnets.size() ; o++){			
+			Magnet m = skeletor.magnets.get(o); 
+			for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator(); i.hasNext(); ){				
+				Particle p = i.next().getEnd();
+				m.attract(p);					
+			}		
+		}
+
+	}
+
+	public void pre(){
+		ps.tick(.05f);
+		elasticWordCreator.update();
+		skeletor.update();				
+	}
+	
+	public void render(){
 			parent.pushStyle();
 			parent.pushMatrix();
 			
@@ -101,8 +92,7 @@ public class Universe {
 
 			
 			parent.popStyle();
-			parent.popMatrix();
-			
+			parent.popMatrix();			
 	}
 	
 	
@@ -139,7 +129,7 @@ public class Universe {
 	}
 	
 	public Scene getSceneReference(){
-		return proscene;
+		return scene;
 	}
 	public PFont getFontReference(){
 		return helvetica;

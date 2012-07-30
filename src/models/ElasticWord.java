@@ -126,9 +126,7 @@ public class ElasticWord {
 		parent.pushMatrix();
 		parent.pushStyle();		
 		
-		parent.scale(scale);
-		
-		
+//		parent.scale(scale);
 		
 		for(int i = 0 ; i < word.length() ; i++){
 
@@ -137,16 +135,13 @@ public class ElasticWord {
 				p1  = Util.getPVector(springs[i].getOneEnd().position());
 				p2  = Util.getPVector(springs[i].getTheOtherEnd().position());      
 
-
 				nodes[i].setPosition(p1);
-
 				dir = PVector.sub(p2, p1);
+
 				Quaternion q = new Quaternion(axis, dir );
 				nodes[i].setOrientation(q);	
-							
 				
 			}else{
-
 
 				p1  = Util.getPVector(springs[i-1].getOneEnd().position());
 				p2  = Util.getPVector(springs[i-1].getTheOtherEnd().position());      
@@ -156,8 +151,7 @@ public class ElasticWord {
 				Quaternion q = new Quaternion(axis, dir );
 				nodes[i].setOrientation(q);				
 			}
-			
-			
+						
 			parent.pushMatrix();
 			parent.applyMatrix(nodes[i].matrix());
 			
@@ -197,7 +191,6 @@ public class ElasticWord {
 	}
 
 	public Spring connectToWord(ElasticWord otherWord){
-		
 		springs[springs.length - 1] = ps.makeSpring( getNode(0), otherWord.getEnd(), springStrenght	, springDamp, springLength); 
 		return springs[springs.length - 1];
 		
@@ -205,6 +198,11 @@ public class ElasticWord {
 
 	public int lettersCount() {
 		return word.length();
+	}
+
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
