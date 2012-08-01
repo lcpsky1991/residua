@@ -22,11 +22,12 @@ public class Magnet {
 	PApplet parent;
 	Sphere s;
 	float mass = 100; 
+	float influence = 5;
+	float intensity = 100;
 	
 	public Magnet(Universe universe){
 		this.universe = universe;
 		this.parent = universe.getPAppletReference(); 
-		parent.registerPre(this);
 		makeEntity(new PVector());
 	}
 	
@@ -39,28 +40,31 @@ public class Magnet {
 	
 	
 	public void attract(Particle p){
-		universe.getParticleSystemReference().makeAttraction(magnet, p, 1000, 10);
+		universe.getParticleSystemReference().makeAttraction(magnet, p, intensity, influence);
 	}
 	
 	public void render(){		
 		parent.pushMatrix();
 		parent.applyMatrix(origin.matrix());
-		parent.box(5);
+		parent.box(influence);
 		parent.popMatrix();
 	}
 
 
-	public void setPosition(float x, float y, float z) {
-		origin.setPosition(x,y,z);		
-	}
-
 
 	public void setPosition(PVector w) {
 		origin.setPosition(w);
+		update();
 	}
+
+	public void setPosition(float x, float y, float z) {
+		origin.setPosition(x,y,z);
+		update();
+	}
+
 	
 
-	public void pre(){
+	private void update(){
 		magnet.position().set(origin.position().x, origin.position().y, origin.position().z);
 	}
 

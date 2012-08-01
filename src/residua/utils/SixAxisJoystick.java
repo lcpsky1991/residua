@@ -367,7 +367,8 @@ public class SixAxisJoystick extends HIDevice {
 	PVector targetPosition = new PVector();
 	PVector p = new PVector();
 	protected void handleCamera() {
-//		System.out.println(camera.fieldOfView() / PApplet.TWO_PI);
+
+	
 
 		// targetPosition = target.position();
 		targetPosition.x += sright.x * 5;
@@ -377,6 +378,8 @@ public class SixAxisJoystick extends HIDevice {
 		target.position().set(targetPosition);
 
 		if(true){
+			
+			System.out.println(right.x);
 
 			p = camera.position();
 		
@@ -390,7 +393,7 @@ public class SixAxisJoystick extends HIDevice {
 		fov += PApplet.TWO_PI * 0.001f * (right.x);
 		camera.setFieldOfView(fov);
 		
-		System.out.println(sright.y);
+		//System.out.println(sright.y);
 		
 		theta = sright.x * 0.01f;
 		phi = sright.y 	* 0.01f;

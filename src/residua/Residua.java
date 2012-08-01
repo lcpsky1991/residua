@@ -30,7 +30,7 @@ public class Residua extends PApplet {
 	 * @param 
 	 */
 	public static void main(String[] args) {
-		PApplet.main(new String[] {  "residua.Residua" });
+		PApplet.main(new String[] {  "residua.Residua", "--present" });
 
 	}
 
@@ -88,7 +88,7 @@ public class Residua extends PApplet {
 
 		oscP5 = new OscP5(this, "127.0.0.1", 7110);
 		
-		
+		blendMode(ALPHA);
 	}
 
 

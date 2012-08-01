@@ -16,15 +16,14 @@ import traer.physics.Particle;
 
 public class Skeletor {
 
-	OSCeletonParser parser;
 
-	Hashtable<Integer, Skeletor> skels = new Hashtable<Integer, Skeletor>();
+
+//	Hashtable<Integer, Skeletor> skels = new Hashtable<Integer, Skeletor>();
 
 	Universe universe;
-
-	// We just use this class as a structure to store the joint coordinates sent by OSC.
-	// The format is {x, y, z}, where x and y are in the [0.0, 1.0] interval, 
-	// and z is in the [0.0, 7.0] interval.
+	Frame origin;
+	OSCeletonParser parser;
+	
 	PVector headCoords 			= new PVector();
 	PVector neckCoords 			= new PVector();
 	PVector rCollarCoords 		= new PVector();
@@ -76,15 +75,13 @@ public class Skeletor {
 	
 	ArrayList<PVector> allCoords;
 	ArrayList<PVector> s_Coords; 
-	ArrayList<Magnet> magnets;
-//	HashMap<PVector, PVector> scaledCoords;
 	
 	int id; //here we store the skeleton's ID as assigned by OpenNI and sent through OSC.
 	float colors[] = {255, 0, 0};// The color of this skeleton
 
 	float size = 100;
 	PApplet parent;
-	Frame origin;
+	
 	Frame universeOrigin;
 	float easeFactor = .5f;
 	
@@ -92,6 +89,7 @@ public class Skeletor {
 	public Skeletor(Universe universe) {
 
 		this.universe = universe;
+		
 		if(universe == null) throw new NullPointerException("no hay universo");
 
 		this.parent = universe.getPAppletReference();
@@ -107,10 +105,9 @@ public class Skeletor {
 		size =  universe.getSceneReference().radius() / 2 ;
 
 		id = 0;
-
 		
 		allCords();
-		createMagnets();
+
 	}
 	
 
@@ -214,38 +211,24 @@ public class Skeletor {
 		
 	}
 	
-	private void createMagnets(){
-		magnets = new ArrayList<Magnet>();
-		
-		for (int i = 0 ; i < s_Coords.size() ; i ++){
-			Magnet m = new Magnet(universe);
-			magnets.add(m);
-		}
-	}
 
-	public void setMagnetInfluenceTo(Particle p){
-		for (int i = 0 ; i < magnets.size(); i ++){
-			magnets.get(i).attract(p);
-		}		
-	}
+//	public void setMagnetInfluenceTo(Particle p){
+//		for (int i = 0 ; i < magnets.size(); i ++){
+//			magnets.get(i).attract(p);
+//		}		
+//	}
 
 
 	public void update(){
-
-//		System.out.println(allCoords.size());
-//		System.out.println(magnets.size());
 		for (int i = 0 ; i < allCoords.size() ; i++){
-			
-			
+
 			PVector scaledCoord =  new PVector(allCoords.get(i).x * size, allCoords.get(i).y * size, allCoords.get(i).z * -size);
 			PVector transformedCoord = origin.inverseCoordinatesOf(scaledCoord);
-						
 			PVector p = s_Coords.get(i);
 			p.x = Util.ease(p.x, transformedCoord.x , easeFactor);
 			p.y = Util.ease(p.y, transformedCoord.y , easeFactor);
 			p.z = Util.ease(p.z, transformedCoord.z , easeFactor);
 
-			magnets.get(i).setPosition(p);
 		}
 
 	}
@@ -277,36 +260,37 @@ public class Skeletor {
 		drawBone(s_lHipCoords, s_lKneeCoords);
 		drawBone(s_lKneeCoords, s_lFootCoords);		
 
-		for(int i = 0 ; i < magnets.size() ; i ++){
+//		for(int i = 0 ; i < magnets.size() ; i ++){
 //			parent.pushMatrix();
 //			parent.translate(magnets.get(i).magnet.position().x(), magnets.get(i).magnet.position().y(), magnets.get(i).magnet.position().z());
 //			parent.box(5);
 //			parent.text(i, 10, 0);
 //			parent.popMatrix();
-			magnets.get(i).render();
-		}
+//			magnets.get(i).render();
+///		}
 		
 		universe.getPAppletReference().popMatrix();
 	}
 
-	float ballsize = 4;
+	
+//	float ballsize = 4;
 
 
 	void drawBone(PVector p1, PVector p2){
 		line(p1,p2);
 	}
 
-	void drawBone(float joint1[], float joint2[]){
-
-
-
-		PVector p1 = new PVector(joint1[0],joint1[1],joint1[2]);
-		PVector p2 = new PVector(joint2[0],joint2[1],joint2[2]);
-
-		// parent.line(j1.x, j1.y, j1.z, j2.x, j2.y, j2.z);
-		line(p1,p2);
-
-	}
+//	void drawBone(float joint1[], float joint2[]){
+//
+//
+//
+//		PVector p1 = new PVector(joint1[0],joint1[1],joint1[2]);
+//		PVector p2 = new PVector(joint2[0],joint2[1],joint2[2]);
+//
+//		// parent.line(j1.x, j1.y, j1.z, j2.x, j2.y, j2.z);
+//		line(p1,p2);
+//
+//	}
 
 	private void line(PVector j1, PVector j2){
 		parent.pushMatrix();
@@ -339,8 +323,18 @@ public class Skeletor {
 	 */
 
 
-	public void parseMessage(OscMessage msg) {
+	public void receiveMessage(OscMessage msg) {
 		parser.oscEvent(msg);
+	}
+
+
+	public int getJointNumber() {
+		return s_Coords.size();
+	}
+
+
+	public PVector getJoint(int i) { 
+		return s_Coords.get(i);
 	}
 
 

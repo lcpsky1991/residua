@@ -30,7 +30,7 @@ public class ElasticWord {
 	String word;
 	PFont font;
 
-	int fontSize = 6;
+	int fontSize = 5;
 	
 	float  springStrenght = 40; //10;
 	float  mass = 4f;

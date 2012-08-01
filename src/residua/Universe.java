@@ -24,14 +24,13 @@ public class Universe {
 	private Scene scene;
 	
 	private ParticleSystem ps;
-	private float psDrag = 0.1f;
-	private PVector g = new PVector(0,1f,0);
-	
-//	private Sphere s;
-//	private ElasticWord word;
+	private float psDrag = 1.1f;
+	private PVector g = new PVector(0,0,0);
+
 	private Skeletor skeletor ;
 	
 	private ElasticWordCreator elasticWordCreator;
+	ArrayList<Magnet> magnets;
 	
 	private PFont helvetica;
 
@@ -49,6 +48,7 @@ public class Universe {
 		ps = new ParticleSystem(g.x, g.y, g.z, psDrag);
 		
 		elasticWordCreator = new ElasticWordCreator(this);
+		
 		skeletor = new Skeletor(this);
 		init();
 	}
@@ -66,20 +66,37 @@ public class Universe {
 		}
 
 		
-		for(int o = 0; o < skeletor.magnets.size() ; o++){			
-			Magnet m = skeletor.magnets.get(o); 
+		
+			magnets = new ArrayList<Magnet>();
+			
+			for (int i = 0 ; i < skeletor.getJointNumber() ; i ++){
+				Magnet m = new Magnet(this);
+				magnets.add(m);
+			}
+		
+
+			
+		for(int o = 0; o < magnets.size() ; o++){			
+				Magnet m = magnets.get(o); 
+			
 			for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator(); i.hasNext(); ){				
 				Particle p = i.next().getEnd();
 				m.attract(p);					
-			}		
+			}
+					
 		}
-
 	}
 
 	public void pre(){
 		ps.tick(.05f);
 		elasticWordCreator.update();
-		skeletor.update();				
+		skeletor.update();	
+		
+		// magnets
+		for(int i = 0 ; i < magnets.size() ; i++){
+			PVector p = skeletor.getJoint(i);
+			magnets.get(i).setPosition(p);
+		}
 	}
 	
 	public void render(){
@@ -89,6 +106,11 @@ public class Universe {
 			
 			elasticWordCreator.render();
 			skeletor.render();
+			
+
+			for (int i = 0 ; i < skeletor.getJointNumber() ; i ++){
+				magnets.get(i).render();
+			}
 
 			
 			parent.popStyle();
@@ -148,6 +170,6 @@ public class Universe {
 //	}
 
 	public void receiveMessage(OscMessage msg) {
-		skeletor.parseMessage(msg);
+		skeletor.receiveMessage(msg);
 	}
 }
