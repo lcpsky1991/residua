@@ -15,15 +15,13 @@ import residua.utils.Util;
 import traer.physics.Particle;
 
 public class Skeletor {
-
-
-
-//	Hashtable<Integer, Skeletor> skels = new Hashtable<Integer, Skeletor>();
-
-	Universe universe;
-	Frame origin;
-	OSCeletonParser parser;
 	
+	PApplet 			parent;
+	Universe 			universe;
+	Frame 				origin;
+	OSCeletonParser 	parser;
+	
+	// cordenadas de OSCeleton
 	PVector headCoords 			= new PVector();
 	PVector neckCoords 			= new PVector();
 	PVector rCollarCoords 		= new PVector();
@@ -48,6 +46,7 @@ public class Skeletor {
 	PVector lAnkleCoords 		= new PVector();
 	PVector lFootCoords 		= new PVector();
 
+	// coordenadas interpoladas
 	PVector s_headCoords 			= new PVector();
 	PVector s_neckCoords 			= new PVector();
 	PVector s_rCollarCoords 		= new PVector();
@@ -73,14 +72,14 @@ public class Skeletor {
 	PVector s_lFootCoords 			= new PVector();
 	
 	
-	ArrayList<PVector> allCoords;
-	ArrayList<PVector> s_Coords; 
+	ArrayList<PVector> rawCoords;
+	ArrayList<PVector> easedCoords; 
 	
 	int id; //here we store the skeleton's ID as assigned by OpenNI and sent through OSC.
 	float colors[] = {255, 0, 0};// The color of this skeleton
 
-	float size = 100;
-	PApplet parent;
+	float skeletonSize = 100;
+	
 	
 	Frame universeOrigin;
 	float easeFactor = .5f;
@@ -102,18 +101,18 @@ public class Skeletor {
 
 		parser = new OSCeletonParser(this);
 
-		size =  universe.getSceneReference().radius() / 2 ;
+		skeletonSize =  universe.getSceneReference().radius() / 2 ;
 
 		id = 0;
 		
-		allCords();
+		init();
 
 	}
 	
 
-	private void allCords(){
-		allCoords =  new ArrayList<PVector>();
-		s_Coords = new ArrayList<PVector>();
+	private void init(){
+		rawCoords =  new ArrayList<PVector>();
+		easedCoords = new ArrayList<PVector>();
 //		
 //		//Head to neck 
 //		drawBone(s_headCoords, s_neckCoords);
@@ -139,30 +138,30 @@ public class Skeletor {
 //		drawBone(s_lKneeCoords, s_lFootCoords);		
 //		
 //	
-		allCoords.add(headCoords);
-		allCoords.add(neckCoords);
+		rawCoords.add(headCoords);
+		rawCoords.add(neckCoords);
 
-		allCoords.add(rShoulderCoords);
-		allCoords.add(lShoulderCoords);
+		rawCoords.add(rShoulderCoords);
+		rawCoords.add(lShoulderCoords);
 		
-		allCoords.add(torsoCoords);
-		
-		
-		allCoords.add(rElbowCoords);
-		allCoords.add(lElbowCoords);
+		rawCoords.add(torsoCoords);
 		
 		
-		allCoords.add(rHandCoords);
-		allCoords.add(lHandCoords);
+		rawCoords.add(rElbowCoords);
+		rawCoords.add(lElbowCoords);
 		
-		allCoords.add(rHipCoords);
-		allCoords.add(lHipCoords);
+		
+		rawCoords.add(rHandCoords);
+		rawCoords.add(lHandCoords);
+		
+		rawCoords.add(rHipCoords);
+		rawCoords.add(lHipCoords);
 
-		allCoords.add(rKneeCoords);
-		allCoords.add(lKneeCoords);
+		rawCoords.add(rKneeCoords);
+		rawCoords.add(lKneeCoords);
 		
-		allCoords.add(rFootCoords);
-		allCoords.add(lFootCoords);
+		rawCoords.add(rFootCoords);
+		rawCoords.add(lFootCoords);
 		
 		
 //		allCoords.add(rCollarCoords); 
@@ -175,29 +174,29 @@ public class Skeletor {
 //		allCoords.add(lAnkleCoords); 
 
 		
-		s_Coords.add(s_headCoords);
-		s_Coords.add(s_neckCoords);
+		easedCoords.add(s_headCoords);
+		easedCoords.add(s_neckCoords);
 		
 
-		s_Coords.add(s_rShoulderCoords); 
-		s_Coords.add(s_lShoulderCoords);
+		easedCoords.add(s_rShoulderCoords); 
+		easedCoords.add(s_lShoulderCoords);
 		
-		s_Coords.add(s_torsoCoords);
+		easedCoords.add(s_torsoCoords);
 		
-		s_Coords.add(s_rElbowCoords);
-		s_Coords.add(s_lElbowCoords);
+		easedCoords.add(s_rElbowCoords);
+		easedCoords.add(s_lElbowCoords);
 		
-		s_Coords.add(s_rHandCoords);
-		s_Coords.add(s_lHandCoords);
+		easedCoords.add(s_rHandCoords);
+		easedCoords.add(s_lHandCoords);
 
-		s_Coords.add(s_rHipCoords);
-		s_Coords.add(s_lHipCoords);
+		easedCoords.add(s_rHipCoords);
+		easedCoords.add(s_lHipCoords);
 
-		s_Coords.add(s_rKneeCoords);
-		s_Coords.add(s_lKneeCoords);
+		easedCoords.add(s_rKneeCoords);
+		easedCoords.add(s_lKneeCoords);
 				
-		s_Coords.add(s_rFootCoords);
-		s_Coords.add(s_lFootCoords);
+		easedCoords.add(s_rFootCoords);
+		easedCoords.add(s_lFootCoords);
 		
 //		s_Coords.add(s_rCollarCoords); 		
 //		s_Coords.add(s_rWristCoords);
@@ -210,21 +209,16 @@ public class Skeletor {
 		
 		
 	}
-	
-
-//	public void setMagnetInfluenceTo(Particle p){
-//		for (int i = 0 ; i < magnets.size(); i ++){
-//			magnets.get(i).attract(p);
-//		}		
-//	}
 
 
 	public void update(){
-		for (int i = 0 ; i < allCoords.size() ; i++){
 
-			PVector scaledCoord =  new PVector(allCoords.get(i).x * size, allCoords.get(i).y * size, allCoords.get(i).z * -size);
+		for (int i = 0 ; i < rawCoords.size() ; i++){
+
+			PVector scaledCoord =  new PVector(rawCoords.get(i).x * skeletonSize, rawCoords.get(i).y * skeletonSize, rawCoords.get(i).z * -skeletonSize);
 			PVector transformedCoord = origin.inverseCoordinatesOf(scaledCoord);
-			PVector p = s_Coords.get(i);
+			PVector p = easedCoords.get(i);
+			
 			p.x = Util.ease(p.x, transformedCoord.x , easeFactor);
 			p.y = Util.ease(p.y, transformedCoord.y , easeFactor);
 			p.z = Util.ease(p.z, transformedCoord.z , easeFactor);
@@ -234,10 +228,81 @@ public class Skeletor {
 	}
 
 	public void render(){  
-		//System.out.println("exito");
 
 		parent.pushMatrix();
 	
+		
+		
+		parent.popMatrix();
+	}
+	
+	
+	private void drawNoisiLineSkeletor(){
+		int seg = 10;
+		//Head to neck 
+		drawNoisyBone(s_headCoords, s_neckCoords);
+		//Center upper body
+		drawNoisyBone(s_headCoords, s_rShoulderCoords);
+		drawNoisyBone(s_headCoords, s_lShoulderCoords);
+		drawNoisyBone(s_neckCoords, s_torsoCoords);
+		//Right upper body
+		drawNoisyBone(s_rShoulderCoords, s_rElbowCoords);
+		drawNoisyBone(s_rElbowCoords, s_rHandCoords);
+		//Left upper body
+		drawNoisyBone(s_lShoulderCoords, s_lElbowCoords);
+		drawNoisyBone(s_lElbowCoords, s_lHandCoords);
+		//Torso
+		drawNoisyBone(s_rHipCoords, s_torsoCoords);
+		drawNoisyBone(s_lHipCoords, s_torsoCoords);
+		//Right leg
+		drawNoisyBone(s_rHipCoords, s_rKneeCoords);
+		drawNoisyBone(s_rKneeCoords, s_rFootCoords);
+		//Left leg
+		drawNoisyBone(s_lHipCoords, s_lKneeCoords);
+		drawNoisyBone(s_lKneeCoords, s_lFootCoords, seg);		
+		
+	}
+	
+	private void drawNoisyBone(PVector p1, PVector p2, int segments){
+		noisiLine(p1, p2, segments);
+	}
+	
+	PVector jitter = new PVector();
+	float jitterAmplitude = 2;
+	float jitterSpeed = 0.01f;
+	
+	private void noisiLine(PVector j1, PVector j2, int steps){
+		parent.pushMatrix();
+		parent.pushStyle();
+		parent.stroke(255,0,0);
+		
+		PVector direction = PVector.sub(j1, j2);
+		
+		PVector p1 = new PVector(j1.x,j1.y,j1.z);
+		PVector p2 = new PVector();
+		
+		for(int i = 0; i < steps; i++){
+			
+			p2 = PVector.mult(direction, 1.f/ steps);
+			
+			jitter.x = parent.noise(parent.frameCount * jitterSpeed, 0, 0);
+			jitter.y = parent.noise(0, parent.frameCount * jitterSpeed, 0);
+			jitter.z = parent.noise(0, 0, parent.frameCount * jitterSpeed);
+			
+			p2.add(jitter);
+			parent.line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+			
+			p1 = p2;
+			
+		}
+		
+		
+		
+		parent.popStyle();
+		parent.popMatrix();		
+	}
+	
+	private void drawLineSkeletor(){
 		//Head to neck 
 		drawBone(s_headCoords, s_neckCoords);
 		//Center upper body
@@ -260,37 +325,11 @@ public class Skeletor {
 		drawBone(s_lHipCoords, s_lKneeCoords);
 		drawBone(s_lKneeCoords, s_lFootCoords);		
 
-//		for(int i = 0 ; i < magnets.size() ; i ++){
-//			parent.pushMatrix();
-//			parent.translate(magnets.get(i).magnet.position().x(), magnets.get(i).magnet.position().y(), magnets.get(i).magnet.position().z());
-//			parent.box(5);
-//			parent.text(i, 10, 0);
-//			parent.popMatrix();
-//			magnets.get(i).render();
-///		}
-		
-		universe.getPAppletReference().popMatrix();
 	}
-
-	
-//	float ballsize = 4;
-
-
 	void drawBone(PVector p1, PVector p2){
 		line(p1,p2);
 	}
 
-//	void drawBone(float joint1[], float joint2[]){
-//
-//
-//
-//		PVector p1 = new PVector(joint1[0],joint1[1],joint1[2]);
-//		PVector p2 = new PVector(joint2[0],joint2[1],joint2[2]);
-//
-//		// parent.line(j1.x, j1.y, j1.z, j2.x, j2.y, j2.z);
-//		line(p1,p2);
-//
-//	}
 
 	private void line(PVector j1, PVector j2){
 		parent.pushMatrix();
@@ -301,40 +340,17 @@ public class Skeletor {
 		parent.popMatrix();
 	}
 
-	/*
-	void drawBone(float joint1[], float joint2[]) {
-
-		if ((joint1[0] == -1 && joint1[1] == -1) || (joint2[0] == -1 && joint2[1] == -1))
-			return;
-
-		float dx = (joint2[0] - joint1[0]) * size;
-		float dy = (joint2[1] - joint1[1]) * size;
-		float dz = (joint2[2] - joint1[2]) * size;
-		float steps = 2 * PApplet.sqrt(PApplet.pow(dx,2) + PApplet.pow(dy,2)) / ballsize;
-		float step_x = dx / steps / size;
-		float step_y = dy / steps / size;
-
-		for (int i=0; i<=steps; i++) {
-			parent.ellipse( (joint1[0] + (i*step_x)) * size, 
-					(joint1[1] + (i*step_y)) * size, 
-					ballsize, ballsize);
-		}
-	}
-	 */
-
 
 	public void receiveMessage(OscMessage msg) {
 		parser.oscEvent(msg);
 	}
 
-
 	public int getJointNumber() {
-		return s_Coords.size();
+		return easedCoords.size();
 	}
 
-
 	public PVector getJoint(int i) { 
-		return s_Coords.get(i);
+		return easedCoords.get(i);
 	}
 
 

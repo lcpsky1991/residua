@@ -59,7 +59,7 @@ public class ElasticChain implements Trackable {
 	private void createElasticWord(String w, GlFont f, float x, float y , float z) {
 
 		ElasticWord ew = new ElasticWord(parent, ps);
-		ew.makeWord(w,f,x,y,z);
+		ew.makeLettersSpring(w,f,x,y,z);
 		
 		// aca tengo que crear una palabra nueva
 		

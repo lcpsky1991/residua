@@ -9,27 +9,34 @@ import processing.core.*;
 
 public class ElasticWordCreator {
 	
+	Universe universe;
+	
 	ArrayList<ElasticWord> words;
 	
-	Universe universe;
+	
 	
 	public ElasticWordCreator(Universe universe){
 		setup(universe);
 	}
 	
 	private void setup(Universe universe){
-		words  = new ArrayList<ElasticWord>();
 		this.universe = universe;
+		words  = new ArrayList<ElasticWord>();
 	}
 	
-	void createWord(String text, PVector position){
+	public void createWord(String text, PVector position){
 		ElasticWord w = new ElasticWord(this.universe);
-		w.makeWord(text, universe.getFontReference(), position.x, position.y, position.z);
+		w.makeLettersSpring(text, universe.getFontReference(), position.x, position.y, position.z);
 		words.add(w);
 	}
 	
+	public void update() {
+		for(Iterator<ElasticWord> i = words.iterator() ; i.hasNext(); ){
+			i.next().update();
+		}	
+	}
 	
-	void render(){
+	public void render(){
 		for(Iterator<ElasticWord> i = words.iterator() ; i.hasNext(); ){
 			i.next().render();
 		}
@@ -43,12 +50,6 @@ public class ElasticWordCreator {
 		return words.get(i);
 	}
 
-	public void update() {
-		for(Iterator<ElasticWord> i = words.iterator() ; i.hasNext(); ){
-			i.next().update();
-		}
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 }
