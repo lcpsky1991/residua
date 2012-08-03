@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import models.ElasticRibbon;
+
 import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 import oscP5.OscMessage;
@@ -84,6 +86,7 @@ public class Skeletor {
 	Frame universeOrigin;
 	float easeFactor = .5f;
 	
+	ArrayList<ElasticRibbon> ribbons;
 	
 	public Skeletor(Universe universe) {
 
@@ -103,6 +106,11 @@ public class Skeletor {
 
 		skeletonSize =  universe.getSceneReference().radius() / 2 ;
 
+		ribbons = new ArrayList<ElasticRibbon>();
+		for (int i = 0 ; i < 14 ; i ++){
+			ribbons.add(new ElasticRibbon(universe, 10));
+		}
+		
 		id = 0;
 		
 		init();
@@ -231,34 +239,70 @@ public class Skeletor {
 
 		parent.pushMatrix();
 	
-		
+		//drawNoisiLineSkeletor();
+		//drawLineSkeletor();
+		drawRibbonSkeletor();
 		
 		parent.popMatrix();
 	}
 	
 	
+	private void drawRibbonSkeletor(){
+		
+		drawRibbon(0, s_headCoords, s_neckCoords);
+		//Center upper body
+		drawRibbon(1, s_headCoords, s_rShoulderCoords);
+		drawRibbon(2, s_headCoords, s_lShoulderCoords);
+		drawRibbon(3, s_neckCoords, s_torsoCoords);
+		//Right upper body
+		drawRibbon(4, s_rShoulderCoords, s_rElbowCoords);
+		drawRibbon(5, s_rElbowCoords, s_rHandCoords);
+		//Left upper body
+		drawRibbon(6, s_lShoulderCoords, s_lElbowCoords);
+		drawRibbon(7, s_lElbowCoords, s_lHandCoords);
+		//Torso
+		drawRibbon(8, s_rHipCoords, s_torsoCoords);
+		drawRibbon(9, s_lHipCoords, s_torsoCoords);
+		//Right leg
+		drawRibbon(10, s_rHipCoords, s_rKneeCoords);
+		drawRibbon(11, s_rKneeCoords, s_rFootCoords);
+		//Left leg
+		drawRibbon(12, s_lHipCoords, s_lKneeCoords);
+		drawRibbon(13, s_lKneeCoords, s_lFootCoords);		
+
+	}
+	
+	
+	
+	private void drawRibbon(int i, PVector j1, PVector j2) {
+		ribbons.get(i).getParticle(0).position().set(j1.x, j1.y, j1.z);
+		ribbons.get(i).getParticle(ribbons.get(i).getNodesCount() -1).position().set(j2.x, j2.y, j2.z);
+		ribbons.get(i).render();
+	}
+
+
 	private void drawNoisiLineSkeletor(){
 		int seg = 10;
 		//Head to neck 
-		drawNoisyBone(s_headCoords, s_neckCoords);
+		drawNoisyBone(s_headCoords, s_neckCoords,seg);
 		//Center upper body
-		drawNoisyBone(s_headCoords, s_rShoulderCoords);
-		drawNoisyBone(s_headCoords, s_lShoulderCoords);
-		drawNoisyBone(s_neckCoords, s_torsoCoords);
+		drawNoisyBone(s_headCoords, s_rShoulderCoords,seg);
+		drawNoisyBone(s_headCoords, s_lShoulderCoords,seg);
+		drawNoisyBone(s_neckCoords, s_torsoCoords,seg);
 		//Right upper body
-		drawNoisyBone(s_rShoulderCoords, s_rElbowCoords);
-		drawNoisyBone(s_rElbowCoords, s_rHandCoords);
+		drawNoisyBone(s_rShoulderCoords, s_rElbowCoords, seg);
+		drawNoisyBone(s_rElbowCoords, s_rHandCoords, seg);
 		//Left upper body
-		drawNoisyBone(s_lShoulderCoords, s_lElbowCoords);
-		drawNoisyBone(s_lElbowCoords, s_lHandCoords);
+		drawNoisyBone(s_lShoulderCoords, s_lElbowCoords,seg );
+		drawNoisyBone(s_lElbowCoords, s_lHandCoords,seg);
 		//Torso
-		drawNoisyBone(s_rHipCoords, s_torsoCoords);
-		drawNoisyBone(s_lHipCoords, s_torsoCoords);
+		drawNoisyBone(s_rHipCoords, s_torsoCoords,seg);
+		drawNoisyBone(s_lHipCoords, s_torsoCoords,seg);
 		//Right leg
-		drawNoisyBone(s_rHipCoords, s_rKneeCoords);
-		drawNoisyBone(s_rKneeCoords, s_rFootCoords);
+		drawNoisyBone(s_rHipCoords, s_rKneeCoords,seg);
+		drawNoisyBone(s_rKneeCoords, s_rFootCoords,seg);
 		//Left leg
-		drawNoisyBone(s_lHipCoords, s_lKneeCoords);
+		drawNoisyBone(s_lHipCoords, s_lKneeCoords, seg);
 		drawNoisyBone(s_lKneeCoords, s_lFootCoords, seg);		
 		
 	}
@@ -268,27 +312,33 @@ public class Skeletor {
 	}
 	
 	PVector jitter = new PVector();
-	float jitterAmplitude = 2;
+	float jitterAmplitude = 4;
 	float jitterSpeed = 0.01f;
 	
 	private void noisiLine(PVector j1, PVector j2, int steps){
+		
 		parent.pushMatrix();
 		parent.pushStyle();
+		
 		parent.stroke(255,0,0);
 		
-		PVector direction = PVector.sub(j1, j2);
+		
 		
 		PVector p1 = new PVector(j1.x,j1.y,j1.z);
-		PVector p2 = new PVector();
-		
-		for(int i = 0; i < steps; i++){
+		PVector p2 = new PVector(j1.x,j1.y,j1.z);
+		// P = P1 + u (P2 - P1)
+		// p = p1 + u * dir
+		for(int i = 0; i < steps + 1; i++){
 			
-			p2 = PVector.mult(direction, 1.f/ steps);
+			p2 = pointInLine(j1, j2, i * 1.f / steps);
 			
-			jitter.x = parent.noise(parent.frameCount * jitterSpeed, 0, 0);
-			jitter.y = parent.noise(0, parent.frameCount * jitterSpeed, 0);
-			jitter.z = parent.noise(0, 0, parent.frameCount * jitterSpeed);
 			
+			jitter.x = parent.noise(parent.frameCount * jitterSpeed * i, 0, 0) * jitterAmplitude;
+			jitter.y = parent.noise(0, parent.frameCount * jitterSpeed * i, 0) * jitterAmplitude;
+			jitter.z = parent.noise(0, 0, parent.frameCount * jitterSpeed * i) * jitterAmplitude;
+			
+//			parent.println(jitter);
+
 			p2.add(jitter);
 			parent.line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
 			
@@ -300,6 +350,13 @@ public class Skeletor {
 		
 		parent.popStyle();
 		parent.popMatrix();		
+	}
+	
+	private PVector pointInLine(PVector start, PVector end, float position){
+		PVector direction = PVector.sub(end, start);
+		PVector p = PVector.add( start, PVector.mult(direction, position) );
+		return p;
+		
 	}
 	
 	private void drawLineSkeletor(){
@@ -334,7 +391,7 @@ public class Skeletor {
 	private void line(PVector j1, PVector j2){
 		parent.pushMatrix();
 		parent.pushStyle();
-		parent.stroke(255,0,0);
+		parent.stroke(0,0,255);
 		parent.line(j1.x, j1.y, j1.z, j2.x, j2.y, j2.z);
 		parent.popStyle();
 		parent.popMatrix();

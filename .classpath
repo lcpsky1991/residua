@@ -8,7 +8,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="lib/SimpleOpenNI/examples/eclipse"/>
-	<classpathentry kind="src" path="src/toxiclibs/src.audio/toxi"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jAppleMunuBar/jAppleMenuBar/build/Debug/jAppleMenuBar.jar">
 		<attributes>
@@ -28,5 +27,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/log4j/library/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/osc/oscP5.jar"/>
+	<classpathentry kind="lib" path="lib/twitter/twitter4j-core-2.2.5-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/twitter/twitter4j-stream-2.2.5-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

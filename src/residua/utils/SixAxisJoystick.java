@@ -37,6 +37,7 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import procontroll.*;
 import processing.core.*;
+import remixlab.proscene.CameraProfile;
 import remixlab.proscene.Frame;
 import remixlab.proscene.HIDevice;
 import remixlab.proscene.Quaternion;
@@ -238,7 +239,9 @@ public class SixAxisJoystick extends HIDevice {
 
 			pov	= new PVector();
 			
-			setCameraMode(CameraMode.FIRST_PERSON);
+			//CameraProfile thirdPersonCP =  new CameraProfile(scene, "THIRD_PERSON", CameraProfile.Mode.THIRD_PERSON );
+			// scene.registerCameraProfile(thirdPersonCP);
+			setCameraMode(CameraMode.GOOGLE_EARTH);
 			camera.setPosition(new PVector(0, 0, 1200));
 			camera.setFieldOfView(fov);
 
@@ -366,28 +369,34 @@ public class SixAxisJoystick extends HIDevice {
 	Frame target =  new Frame();
 	PVector targetPosition = new PVector();
 	PVector p = new PVector();
+	
 	protected void handleCamera() {
 
 	
 
 		// targetPosition = target.position();
-		targetPosition.x += sright.x * 5;
-		targetPosition.y += sright.y * 5;
-		targetPosition.z += 50;
-		
-		target.position().set(targetPosition);
+//		targetPosition.x += sright.x * 5;
+//		targetPosition.y += sright.y * 5;
+//		targetPosition.z += 50;
+//		
+//		target.position().set(targetPosition);
 
 		if(true){
 			
-			System.out.println(right.x);
+		//	System.out.println(right.x);
 
-			p = camera.position();
+//		p = camera.position() ;
 		
 		p.x += left.x * translationSensitivity.x;
 		p.y += left.y * translationSensitivity.y;
 		p.z += right.y * translationSensitivity.z;
 		
-		camera.setPosition(p);
+		Quaternion q = new Quaternion(camera.frame().position(), camera.sceneCenter());
+		PVector rotated_p = camera.orientation().rotate(p);
+		
+		
+		camera.setPosition(rotated_p);
+		
 		
 		fov = camera.fieldOfView();
 		fov += PApplet.TWO_PI * 0.001f * (right.x);
@@ -395,11 +404,16 @@ public class SixAxisJoystick extends HIDevice {
 		
 		//System.out.println(sright.y);
 		
-		theta = sright.x * 0.01f;
-		phi = sright.y 	* 0.01f;
+		theta += sright.x * 0.01f;
+		phi += sright.y 	* 0.01f;
 		
-		camera.frame().rotateAroundPoint(new Quaternion(new PVector(0,1,0), theta), scene.center());
-		camera.frame().rotateAroundPoint(new Quaternion(new PVector(1,0,0), phi), scene.center());
+//		theta += sright.x; //  * 0.01f;
+//		phi += sright.y;   // 	* 0.01f;
+
+//		camera.lookAt(scene.center());
+		camera.setOrientation(theta, phi);
+		//camera.frame().rotateAroundPoint(new Quaternion(new PVector(0,1,0), theta), scene.center());
+		//camera.frame().rotateAroundPoint(new Quaternion(new PVector(1,0,0), phi), scene.center());
 		//camera.setOrientation(theta, phi);
 		}else{
 			

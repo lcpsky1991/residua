@@ -31,7 +31,7 @@ public class ElasticWord {
 	String word;
 	PFont font;
 
-	int fontSize = 5;
+	int fontSize = 1;
 	
 	float  springStrenght = 40; //10;
 	float  mass = 4f;
@@ -74,7 +74,9 @@ public class ElasticWord {
 		
 		float kerning = 0.2f;
 
-		PVector distance = new PVector(); 		
+		PVector distance = new PVector(); 
+		
+		parent.textSize(fontSize);
 		 
 		for(int i = 0 ; i < word.length() ; i++) {
 		
