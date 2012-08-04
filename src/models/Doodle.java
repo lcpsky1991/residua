@@ -30,7 +30,8 @@ public class Doodle {
 	Vec2D rotation=new Vec2D();
 
 	float weight=0;
-
+	int maxLength = 200;
+	
 	public Doodle(Universe universe){
 		this.universe = universe;
 		this.parent = universe.getPAppletReference();
@@ -39,19 +40,14 @@ public class Doodle {
 
 	public void render() {
 
-		//	translate(width/2,height/2,0);
-		//  rotateX(rotation.x);
-		//  rotateY(rotation.y);
-		parent.pushMatrix();
-		
-		parent.noStroke();
+		parent.pushMatrix();		
 		parent.beginShape(PConstants.TRIANGLES);
 		// iterate over all faces/triangles of the mesh
 		
-		if(	mesh.faces.size() > 1000 ){
+		if(	mesh.faces.size() > maxLength ){
 			mesh.faces.remove(0);
 		}
-		parent.fill(127,50);
+
 		for(Iterator<Face> i = mesh.faces.iterator(); i.hasNext();) {
 
 			Face f = i.next();
@@ -61,7 +57,6 @@ public class Doodle {
 			vertex(f.c);
 		}
 		
-		//parent.rect(0, 0, 100, 100);
 		parent.endShape();
 		parent.popMatrix();
 		// udpate rotation

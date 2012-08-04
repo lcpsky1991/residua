@@ -21,6 +21,7 @@ public class Skeletor {
 	PApplet 			parent;
 	Universe 			universe;
 	Frame 				origin;
+	int sceneRadius;
 	OSCeletonParser 	parser;
 	
 	// cordenadas de OSCeleton
@@ -80,7 +81,7 @@ public class Skeletor {
 	int id; //here we store the skeleton's ID as assigned by OpenNI and sent through OSC.
 	float colors[] = {255, 0, 0};// The color of this skeleton
 
-	float skeletonSize = 100;
+	float skeletonSize = 50;
 	
 	
 	Frame universeOrigin;
@@ -91,6 +92,7 @@ public class Skeletor {
 	public Skeletor(Universe universe) {
 
 		this.universe = universe;
+		sceneRadius = (int) universe.getSceneReference().radius();
 		
 		if(universe == null) throw new NullPointerException("no hay universo");
 
@@ -100,11 +102,11 @@ public class Skeletor {
 
 		origin = new Frame();
 		origin.linkTo(universeOrigin);
-		origin.translate(-20, -100, 200);
+		origin.translate(-sceneRadius * 1.f / 10, - sceneRadius*2.f/10, sceneRadius/2);
 
 		parser = new OSCeletonParser(this);
 
-		skeletonSize =  universe.getSceneReference().radius() / 2 ;
+		skeletonSize =  universe.getSceneReference().radius() / 4 ;
 
 		ribbons = new ArrayList<ElasticRibbon>();
 		for (int i = 0 ; i < 14 ; i ++){

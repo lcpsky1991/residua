@@ -1,15 +1,20 @@
 package residua;
 
+import java.awt.Event;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import remixlab.proscene.Frame;
 import remixlab.proscene.Quaternion;
 import remixlab.proscene.Scene;
+import residua.utils.SixAxisJoystick;
 import residua.utils.TwitterSettings;
 import residua.utils.Util;
 import toxi.geom.mesh.Mesh3D;
+import toxi.geom.mesh.Terrain;
 import toxi.math.waves.SineWave;
+import toxi.processing.ToxiclibsSupport;
 import traer.physics.*;
 import twitter4j.FilterQuery;
 import twitter4j.Status;
@@ -36,8 +41,10 @@ public class Universe implements StatusListener {
 	private Scene scene;
 	private Frame origin;
 
+	
+	
 	private ParticleSystem ps;
-	private float psDrag = 1.1f;
+	private float psDrag = 1.4f;
 	private PVector g = new PVector(0, 0, 0);
 
 	private Skeletor skeletor;
@@ -49,9 +56,12 @@ public class Universe implements StatusListener {
 	private PFont helvetica;
 
 	private Mesh3D mesh;
+	private Terrain terrain;
 
-	private Doodle dod;
-
+	private Doodle rigthDod;
+	private Doodle leftDod;
+	
+	private ToxiclibsSupport gfx;
 	private TwitterStream tw;
 
 	PImage img;
@@ -63,6 +73,7 @@ public class Universe implements StatusListener {
 
 		this.parent = parent;
 		parent.registerPre(this);
+//		parent.registerKeyEvent(this);
 
 		this.scene = ((Residua) parent).getCurrentScene();
 
@@ -76,51 +87,72 @@ public class Universe implements StatusListener {
 
 		ribbon = new ElasticRibbon(this);
 
-		dod = new Doodle(this);
-
+		rigthDod = new Doodle(this);
+		leftDod = new Doodle(this);
+		
 		try{
-			tw = new TwitterStreamFactory().getInstance();
-			tw.setOAuthConsumer(TwitterSettings.OAuthConsumerKey, TwitterSettings.OAuthConsumerSecret);
-			twitter4j.auth.AccessToken accessToken = new twitter4j.auth.AccessToken(TwitterSettings.AccessToken, TwitterSettings.AccessTokenSecret); // loadAccessToken();
-			tw.setOAuthAccessToken(accessToken);
-			tw.addListener(this);
-			tw.filter(new FilterQuery().track(TwitterSettings.keywords));
-			parent.println("TWITTER INIT");
+//			tw = new TwitterStreamFactory().getInstance();
+//			tw.setOAuthConsumer(TwitterSettings.OAuthConsumerKey, TwitterSettings.OAuthConsumerSecret);
+//			twitter4j.auth.AccessToken accessToken = new twitter4j.auth.AccessToken(TwitterSettings.AccessToken, TwitterSettings.AccessTokenSecret); // loadAccessToken();
+//			tw.setOAuthAccessToken(accessToken);
+//			tw.addListener(this);
+//			tw.filter(new FilterQuery().track(TwitterSettings.keywords));
+//			parent.println("TWITTER INIT");
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 
-
+		 gfx = new ToxiclibsSupport(parent);
+		 
 		init();
 	}
 
 	private void init() {
-		/*
+		
+		int terrainSize = (int) scene.radius() / 10;
+		  terrain = new Terrain(terrainSize,terrainSize, 10);
+		  float[] el = new float[terrainSize*terrainSize];
+		  parent.noiseSeed(23);
+		  for (int z = 0, i = 0; z < terrainSize; z++) {
+		    for (int x = 0; x < terrainSize; x++) {
+		      el[i++] = parent.noise(x * .08f, z * .08f) * 20;
+		    }
+		  }
+		  terrain.setElevation(el);
+		  mesh = terrain.toMesh();
+
+
 		ArrayList<String> comedy = TextGenerator
 		.readLinesFromFile("./data/inferno2.txt");
 		for (Iterator<String> i = comedy.iterator(); i.hasNext();) {
-			elasticWordCreator.createWord(i.next(),
-					new PVector(parent.random(-scene.radius(), scene.radius()),
-							parent.random(-scene.radius(), scene.radius()),
-							parent.random(-scene.radius(), scene.radius())));
-		}
-		 */
+		//(text, font, fontSize, position)
+//		elasticWordCreator.createWordFromTwitt(
+//				i.next(),
+//				helvetica,
+//				10,
+//				new PVector(parent.random(-scene.radius(), scene.radius()),
+//						parent.random(-scene.radius(), 0),
+//						parent.random(-scene.radius(), scene.radius())));
+	}
+
+
+//		elasticWordCreator.createWordFromTwitt(
+//				"cinco por ocho cuarenta " +
+//				"te espero en la lecheria " +
+//				"abr’ la puerta maria " +
+//				"que parece que hay tormenta", helvetica, 10, new PVector(0, -100, 0));
+		
+		
 		magnets = new ArrayList<Magnet>();
 
 		for (int i = 0; i < skeletor.getJointNumber(); i++) {
 			Magnet m = new Magnet(this);
 			magnets.add(m);
 		}
+		
+		
+		
 
-		// atracciones feo feo !!!
-		for(int o = 0; o < magnets.size() ; o++){
-			Magnet m = magnets.get(o);
-			for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator();
-			i.hasNext(); ){
-				Particle p = i.next().getEnd();
-				m.attract(p);
-			}
-		}
 
 	}
 	boolean newMessage = false;
@@ -129,16 +161,26 @@ public class Universe implements StatusListener {
 
 		ps.tick(.05f);
 
-		PVector a = PVector.random3D();
-		a.mult(100);
+		PVector a = new PVector(parent.random(-scene.radius() , scene.radius()),
+								parent.random( -scene.radius(), 0),
+								parent.random(-scene.radius() , scene.radius()));
+		
 		if(newMessage) {
-			elasticWordCreator.createWord(textToPrint, a);
+			elasticWordCreator.createWordFromTwitt(textToPrint,helvetica,6, a);	
+			Particle p = elasticWordCreator.words.get(elasticWordCreator.words.size() - 1).getEnd();
 			newMessage = false;
-			//scene.camera().interpolateTo(new Frame(a, new Quaternion()), 500);
 		}
 
+//		for(int o = 0; o < magnets.size() ; o++){
+//			Magnet m = magnets.get(o);
+//			m.attract(p);
+//		}
+		
 		elasticWordCreator.update();
 		skeletor.update();
+		
+			
+		
 
 		// magnets
 		for (int i = 0; i < magnets.size(); i++) {
@@ -156,23 +198,39 @@ public class Universe implements StatusListener {
 		}
 
 		Magnet m = magnets.get(8);
-
-		if (dod.prevPosition().dist(Util.getPVector(m.magnet.position())) > 2) {
-			dod.cursorMoved(Util.getPVector(m.magnet.position()));
-		}
-
+		
+		//if (rigthDod.prevPosition().dist(Util.getPVector(m.magnet.position())) > 2) {
+		//	rigthDod.cursorMoved(Util.getPVector(m.magnet.position()));
+		//}
+		
+		m = magnets.get(9);
+		
+		//if (leftDod.prevPosition().dist(Util.getPVector(m.magnet.position())) > 2) {
+			//leftDod.cursorMoved(Util.getPVector(m.magnet.position()));
+		//}
+		System.out.println("PRE");
 	}
 
 	public void render() {
 		parent.pushStyle();
 		parent.pushMatrix();
-
+		
+		parent.stroke(255,30);
+		parent.noFill();
+		gfx.mesh(mesh, true);
+		
+		
+		parent.fill(255, 127);
 		elasticWordCreator.render();
+		
+		parent.fill(255);
+		parent.stroke(255);
 		skeletor.render();
 
-		//ribbon.render();
-		dod.render();
+		parent.fill(255);
+		rigthDod.render();
 
+		
 		for (int i = 0; i < skeletor.getJointNumber(); i++) {
 			// magnets.get(i).render();
 		}
@@ -300,5 +358,95 @@ public class Universe implements StatusListener {
 			}
 		}
 		return (null);
+	}
+
+	private SixAxisJoystick gamepad;
+	
+	public void setControl(SixAxisJoystick gamepad) {
+		this.gamepad = gamepad;
+	}
+	
+	
+	
+	
+	public void keyPressed(int key){
+		
+//		System.out.println("key event");
+		// MAGNETOS
+		if(key == ' '){
+
+			// atracciones feo feo !!!
+			for(int o = 0; o < magnets.size() ; o++){
+			
+				Magnet m = magnets.get(o);
+				
+				for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator(); i.hasNext(); ){					
+					Particle p = i.next().getMiddleNode();
+					m.attract(p);
+				}
+			}
+
+			System.out.println("MAGNETS CREATED");
+		}
+		
+		
+		if(key == '1' || key == '!' ){
+			// atracciones feo feo !!!
+			for(int o = 0; o < magnets.size() ; o++){
+				Magnet m = magnets.get(o);
+				m.disable();
+			}
+			System.out.println("MAGNETS DISABLED");
+		}
+		
+		if(key == '1' || key == '!' ){
+			// atracciones feo feo !!!
+			for(int o = 0; o < magnets.size() ; o++){
+				Magnet m = magnets.get(o);
+				m.disable();
+			}
+			System.out.println("MAGNETS DISABLED");
+		}
+
+		// GRAVEDAD
+		if(key == 'w' || key == 'W'){
+			g.y -= .1f;
+			ps.setGravity(g.x, g.y, g.z);
+			System.out.println("G: " + g);
+		}
+		
+		if(key == 's'  || key == 'S'){
+			g.y += .1f;
+			ps.setGravity(g.x, g.y, g.z);
+			System.out.println("G: " + g);
+						
+		}
+		
+		if(key == 'a' || key == 'A'){
+			g.x -= .1f;
+			ps.setGravity(g.x, g.y, g.z);
+			System.out.println("G: " + g);
+			
+		}
+		
+		if(key == 'd'  || key == 'D'){
+			g.x += .1f;
+			ps.setGravity(g.x, g.y, g.z);
+			System.out.println("G: " + g);
+		}
+		
+		// relase strings
+		if(key == 'f'  || key == 'F'){
+			elasticWordCreator.releaseStrings();
+			System.out.println("STRINGS RELEASED");
+		}
+		
+		if(key == 'y'  || key == 'Y'){
+			elasticWordCreator.conectStrings();
+			System.out.println("STRINGS CONECTED");
+		}
+		
+		
+
 	}
 }

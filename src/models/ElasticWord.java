@@ -55,7 +55,19 @@ public class ElasticWord {
 		
 	}
 
-	public void makeLettersSpring(String w, PFont glf, float x, float y, float z){
+	public float getTextHeight(){
+		return parent.textWidth("O");
+	}
+	public float makeLettersSpring(String w, PFont font, int fontSize, PVector pos){
+		
+		this.fontSize = fontSize;
+		return makeLettersSpring(w,font, pos.x, pos.y, pos.z);
+	}
+	
+	
+	public float makeLettersSpring(String w, PFont glf, float x, float y, float z){
+		
+		float wordSize = 0;
 		
 		this.word = w;
 		this.font = glf;
@@ -72,15 +84,29 @@ public class ElasticWord {
 		
 		float prevCharWidth  = 0;
 		
-		float kerning = 0.2f;
+		float kerning = 1.05f;
+		
+		float jitterAmplitude = 4;
+		float jitterSpeed = 0.01f;
+
 
 		PVector distance = new PVector(); 
+		PVector jitter = new PVector();
 		
 		parent.textSize(fontSize);
 		 
 		for(int i = 0 ; i < word.length() ; i++) {
 		
 			float massVariance = parent.random(.9f,1.1f);
+			
+//			jitter.x = parent.noise(parent.frameCount * jitterSpeed * i, 0, 0) * jitterAmplitude;
+//			jitter.y = parent.noise(0, parent.frameCount * jitterSpeed * i, 0) * jitterAmplitude;
+//			jitter.z = parent.noise(0, 0, parent.frameCount * jitterSpeed * i) * jitterAmplitude;
+
+			
+//			x0 += jitter.x;
+//			y0 += jitter.y;
+//			z0 += jitter.z;
 			
 			nodes[i] = new Frame();
 			
@@ -93,9 +119,10 @@ public class ElasticWord {
 			}else {
 				
 				prevCharWidth = parent.textWidth(word.charAt(i-1));											
+				
 				float space = prevCharWidth * kerning;
 					
-				x1 = x0 + prevCharWidth + space;
+				x1 = x0 + space;
 				
 				particles[i] = ps.makeParticle(
 						mass * massVariance, 
@@ -109,8 +136,15 @@ public class ElasticWord {
 				springs[i-1] = ps.makeSpring(particles[i-1] , particles[i], springStrenght * massVariance, springDamp, distance.mag());
 				
 				x0 = x1;
-			}			
-		}
+				
+				
+			}
+			
+			wordSize = x0;
+		}	
+		
+
+		return wordSize;
 	}
 	
 	public void makeTextRing(){
@@ -177,7 +211,12 @@ public class ElasticWord {
 	private Particle getNode(int index) {
 		return particles[index];
 	}
+	
+	public Particle getMiddleNode() {
+		return particles[particles.length / 2];
+	}
 
+	
 	public void releaseSprings(){
 		for(int i = 0 ; i<springs.length ; i++){
 			springs[i].turnOff();

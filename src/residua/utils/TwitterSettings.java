@@ -20,11 +20,11 @@ public class TwitterSettings {
 	 */
 	// { site, parse token }
 	public static String imageService[][] = { 
-			{ "http://yfrog.com",    "<meta property=\"og:image\" content=\""}, 
-			{"http://twitpic.com",   "<img class=\"photo\" id=\"photo-display\" src=\""}, 
-			{"http://img.ly",        "<img alt=\"\" id=\"the-image\" src=\"" }, 
-			{ "http://lockerz.com/", "<img id=\"photo\" src=\""}, 
-			{"http://instagr.am/",   "<meta property=\"og:image\" content=\""}
+		{ "http://yfrog.com",    "<meta property=\"og:image\" content=\""}, 
+		{"http://twitpic.com",   "<img class=\"photo\" id=\"photo-display\" src=\""}, 
+		{"http://img.ly",        "<img alt=\"\" id=\"the-image\" src=\"" }, 
+		{ "http://lockerz.com/", "<img id=\"photo\" src=\""}, 
+		{"http://instagr.am/",   "<meta property=\"og:image\" content=\""}
 	};
 	///////////////////////////// Config your setup here! ////////////////////////////
 
@@ -36,18 +36,26 @@ public class TwitterSettings {
 	public static String AccessTokenSecret   = "ijadWSZqDOKlbm5eKd5hnfpg5yEgSULxbjY2U0BPUD0";
 
 	// if you enter keywords here it will filter, otherwise it will sample
-	
+
 	public static String keywords[] = {
-	  "tinelli",
-	  "#instituto",
-	  "manuela",
-	  "@vivianasarnosa",
-	  "#quienquierecasarseconmihijo",
-	  "@biobio"
-	  
+
+		"#residua",
+		"#RESIDUA",
+		"residua",
+		"interface",
+		"#INTERFACE",
+//		"chile",
+//		"Chile",
+//		"#chile",
+//		"Santiago",
+//		"#santiago",
+//		"cuerpo",
+//		"#cuerpo",
+//		"resistencia",
+
 	};
-	
-	
+
+
 
 
 }

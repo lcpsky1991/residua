@@ -9,6 +9,7 @@ import processing.core.PMatrix;
 import processing.core.PVector;
 import remixlab.proscene.Frame;
 import remixlab.proscene.Quaternion;
+import traer.physics.Attraction;
 import traer.physics.Particle;
 
 
@@ -25,6 +26,8 @@ public class Magnet {
 	float influence = 5;
 	float intensity = 100;
 	
+	Attraction attractor;
+	
 	public Magnet(Universe universe){
 		this.universe = universe;
 		this.parent = universe.getPAppletReference(); 
@@ -40,7 +43,7 @@ public class Magnet {
 	
 	
 	public void attract(Particle p){
-		universe.getParticleSystemReference().makeAttraction(magnet, p, intensity, influence);
+		attractor = universe.getParticleSystemReference().makeAttraction(magnet, p, intensity, influence);
 	}
 	
 	public void render(){		
@@ -70,5 +73,9 @@ public class Magnet {
 
 	public PMatrix getMatrix() {
 		return origin.matrix();
+	}
+
+	public void disable() {
+		attractor.turnOff();
 	}
 }

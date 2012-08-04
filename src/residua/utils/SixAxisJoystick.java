@@ -368,7 +368,7 @@ public class SixAxisJoystick extends HIDevice {
 	
 	Frame target =  new Frame();
 	PVector targetPosition = new PVector();
-	PVector p = new PVector();
+	PVector p = new PVector(0,0,1200);
 	
 	protected void handleCamera() {
 

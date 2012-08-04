@@ -35,7 +35,13 @@ public class Residua extends PApplet {
 	}
 
 	public static final boolean debug = false;
-
+	public static boolean HELPERS = false;
+	
+	public static final int BLACK_ON_WHITE = 1;
+	public static final int WHITE_ON_BLACK = 0;
+	public static int COLOR_MODE = WHITE_ON_BLACK;
+	
+	
 	PMatrix3D 				currentCameraMatrix;
 	PGraphics3D 			g3; 
 	OscP5 					oscP5;
@@ -58,11 +64,11 @@ public class Residua extends PApplet {
 
 		size(1024,768, P3D);
 
-//		frame.setLocation(-1440, 150);
-		frame.setLocation(0, 0);
-		
+		frame.setLocation(1440, 0);
+//		frame.setLocation(0, 0);
+		System.out.println("SET LOCATION");
 		proscene = new Scene(this);
-		proscene.setRadius(200);
+		proscene.setRadius(500);
 		proscene.camera().setFieldOfView(1.f);
 		proscene.disableKeyboardHandling();
 		proscene.setFrameRate(60);
@@ -70,6 +76,7 @@ public class Residua extends PApplet {
 
 		camera = new Camera(proscene, false);
 		gamepad = new SixAxisJoystick(proscene);
+		
 		
 		
 		proscene.setAxisIsDrawn(false);
@@ -88,24 +95,43 @@ public class Residua extends PApplet {
 
 		oscP5 = new OscP5(this, "127.0.0.1", 7110);
 		
+//		universe.setControl(gamepad);
 		blendMode(ALPHA);
+//		smooth();
+		System.out.println("Salgo setup");
 	}
 
-
+	public float[] lightColor = {255,255,255};
+	
 	public void draw(){
 		
-		background(127);
-		sceneDebug();		
-		noFill();
+		switch (COLOR_MODE) {
+		case WHITE_ON_BLACK:
+			background(0);	
+			break;
 
-		lights();
-		hint(ENABLE_DEPTH_TEST);
+		case BLACK_ON_WHITE:
+			background(255);
+			break;
+
+		default:
+			break;
+		}
 		
-
+		
+		
+		if(HELPERS) sceneDebug();		
+		
+		//lights();
+		ambientLight(200, 200, 200);
+//		spotLight(lightColor[0], lightColor[1], lightColor[2], 
+//				200, 200, 0, 0, 0, 0, TWO_PI / 4, .1f);
+//		
+		directionalLight(200, 200, 200, 0, 0, -1);
+		hint(ENABLE_DEPTH_TEST);
 		universe.render();
 		
-		//
-		gui();
+		if(HELPERS) gui();
 	}
 
 	private void sceneDebug(){
@@ -161,6 +187,7 @@ public class Residua extends PApplet {
 
 	void gui() {
 
+		
 		saveState();
 
 		fill(0);
@@ -224,5 +251,9 @@ public class Residua extends PApplet {
 	void oscEvent(OscMessage msg) {
 		//msg.print();
 		universe.receiveMessage(msg);
+	}
+	
+	public void keyPressed(){
+		universe.keyPressed(key);
 	}
 }
