@@ -44,7 +44,7 @@ public class Universe implements StatusListener {
 	
 	
 	private ParticleSystem ps;
-	private float psDrag = 1.4f;
+	private float psDrag = 1.1f;
 	private PVector g = new PVector(0, 0, 0);
 
 	private Skeletor skeletor;
@@ -69,42 +69,51 @@ public class Universe implements StatusListener {
 	boolean recibeMensaje = false;
 	String textToPrint = "";
 
+	ArrayList<String> comedy ;
+	
 	public Universe(PApplet parent) {
 
 		this.parent = parent;
 		parent.registerPre(this);
-//		parent.registerKeyEvent(this);
+		System.out.println("UNIVERSE REGISTER PRE");
+
 
 		this.scene = ((Residua) parent).getCurrentScene();
-
+		
 		helvetica = parent.loadFont("Helvetica-Bold-48.vlw");
 
 		ps = new ParticleSystem(g.x, g.y, g.z, psDrag);
-
+		
+//		System.out.println("UNIVERSE PARTICLE SISTEM");
 		elasticWordCreator = new ElasticWordCreator(this);
 
 		skeletor = new Skeletor(this);
 
-		ribbon = new ElasticRibbon(this);
+//		ribbon = new ElasticRibbon(this);
 
 		rigthDod = new Doodle(this);
 		leftDod = new Doodle(this);
 		
+		System.out.println("UNIVERSE SET DOODLES");
+		
 		try{
-//			tw = new TwitterStreamFactory().getInstance();
-//			tw.setOAuthConsumer(TwitterSettings.OAuthConsumerKey, TwitterSettings.OAuthConsumerSecret);
-//			twitter4j.auth.AccessToken accessToken = new twitter4j.auth.AccessToken(TwitterSettings.AccessToken, TwitterSettings.AccessTokenSecret); // loadAccessToken();
-//			tw.setOAuthAccessToken(accessToken);
-//			tw.addListener(this);
-//			tw.filter(new FilterQuery().track(TwitterSettings.keywords));
-//			parent.println("TWITTER INIT");
+			tw = new TwitterStreamFactory().getInstance();
+			tw.setOAuthConsumer(TwitterSettings.OAuthConsumerKey, TwitterSettings.OAuthConsumerSecret);
+			twitter4j.auth.AccessToken accessToken = new twitter4j.auth.AccessToken(TwitterSettings.AccessToken, TwitterSettings.AccessTokenSecret); // loadAccessToken();
+			tw.setOAuthAccessToken(accessToken);
+			tw.addListener(this);
+			tw.filter(new FilterQuery().track(TwitterSettings.keywords));
+			parent.println("TWITTER INIT");
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 
 		 gfx = new ToxiclibsSupport(parent);
+		 System.out.println("UNIVERSE SET TOXILIBSUPOR");
+		 
 		 
 		init();
+		 System.out.println("UNIVERSE SET INIT");
 	}
 
 	private void init() {
@@ -118,22 +127,13 @@ public class Universe implements StatusListener {
 		      el[i++] = parent.noise(x * .08f, z * .08f) * 20;
 		    }
 		  }
+		  
 		  terrain.setElevation(el);
 		  mesh = terrain.toMesh();
+		System.out.println("UNIVERSE.init() terrain ok");
 
-
-		ArrayList<String> comedy = TextGenerator
+		comedy = TextGenerator
 		.readLinesFromFile("./data/inferno2.txt");
-		for (Iterator<String> i = comedy.iterator(); i.hasNext();) {
-		//(text, font, fontSize, position)
-//		elasticWordCreator.createWordFromTwitt(
-//				i.next(),
-//				helvetica,
-//				10,
-//				new PVector(parent.random(-scene.radius(), scene.radius()),
-//						parent.random(-scene.radius(), 0),
-//						parent.random(-scene.radius(), scene.radius())));
-	}
 
 
 //		elasticWordCreator.createWordFromTwitt(
@@ -161,13 +161,16 @@ public class Universe implements StatusListener {
 
 		ps.tick(.05f);
 
-		PVector a = new PVector(parent.random(-scene.radius() , scene.radius()),
-								parent.random( -scene.radius(), 0),
-								parent.random(-scene.radius() , scene.radius()));
+		PVector a = new PVector(parent.random(-scene.radius() * .6f, scene.radius() * .6f),
+								parent.random( -scene.radius() * .6f, 0),
+								parent.random(-scene.radius() * .6f, scene.radius() * .6f));
 		
 		if(newMessage) {
 			elasticWordCreator.createWordFromTwitt(textToPrint,helvetica,6, a);	
-			Particle p = elasticWordCreator.words.get(elasticWordCreator.words.size() - 1).getEnd();
+			if(elasticWordCreator.words.size() > 0) {
+				Particle p = elasticWordCreator.words.get(elasticWordCreator.words.size() - 1).getEnd();
+			}				
+			
 			newMessage = false;
 		}
 
@@ -188,34 +191,34 @@ public class Universe implements StatusListener {
 			magnets.get(i).setPosition(p);
 		}
 
-		for (int i = 0; i < magnets.size(); i++) {
-			Magnet m = magnets.get(i);
-			int ribbonNodeCount = ribbon.getNodesCount();
-			Particle ribbonNode = ribbon.getParticle((int) parent.map(i, 0,
-					magnets.size(), 0, ribbonNodeCount));
-			ribbonNode.position().set(m.magnet.position());
-
-		}
+//		for (int i = 0; i < magnets.size(); i++) {
+//			Magnet m = magnets.get(i);
+//			int ribbonNodeCount = ribbon.getNodesCount();
+//			Particle ribbonNode = ribbon.getParticle((int) parent.map(i, 0,
+//					magnets.size(), 0, ribbonNodeCount));
+//			ribbonNode.position().set(m.magnet.position());
+//
+//		}
 
 		Magnet m = magnets.get(8);
 		
-		//if (rigthDod.prevPosition().dist(Util.getPVector(m.magnet.position())) > 2) {
-		//	rigthDod.cursorMoved(Util.getPVector(m.magnet.position()));
-		//}
+		if (rigthDod.prevPosition().dist(Util.getPVector(m.magnet.position())) > 2) {
+				rigthDod.cursorMoved(Util.getPVector(m.magnet.position()));
+		}
 		
-		m = magnets.get(9);
+		Magnet j = magnets.get(7);
 		
-		//if (leftDod.prevPosition().dist(Util.getPVector(m.magnet.position())) > 2) {
-			//leftDod.cursorMoved(Util.getPVector(m.magnet.position()));
-		//}
-		System.out.println("PRE");
+		if (leftDod.prevPosition().dist(Util.getPVector(j.magnet.position())) > 2) {
+				leftDod.cursorMoved(Util.getPVector(j.magnet.position()));
+		}
+//		System.out.println("PRE");
 	}
 
 	public void render() {
 		parent.pushStyle();
 		parent.pushMatrix();
 		
-		parent.stroke(255,30);
+		parent.stroke(255,100);
 		parent.noFill();
 		gfx.mesh(mesh, true);
 		
@@ -227,9 +230,9 @@ public class Universe implements StatusListener {
 		parent.stroke(255);
 		skeletor.render();
 
-		parent.fill(255);
+		parent.fill(255,100);
 		rigthDod.render();
-
+		leftDod.render();
 		
 		for (int i = 0; i < skeletor.getJointNumber(); i++) {
 			// magnets.get(i).render();
@@ -369,17 +372,14 @@ public class Universe implements StatusListener {
 	
 	
 	
-	public void keyPressed(int key){
+	public void  keyPressed(int key){
 		
 //		System.out.println("key event");
 		// MAGNETOS
 		if(key == ' '){
-
 			// atracciones feo feo !!!
 			for(int o = 0; o < magnets.size() ; o++){
-			
 				Magnet m = magnets.get(o);
-				
 				for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator(); i.hasNext(); ){					
 					Particle p = i.next().getMiddleNode();
 					m.attract(p);
@@ -433,7 +433,7 @@ public class Universe implements StatusListener {
 			g.x += .1f;
 			ps.setGravity(g.x, g.y, g.z);
 			System.out.println("G: " + g);
-		}
+		} 
 		
 		// relase strings
 		if(key == 'f'  || key == 'F'){
@@ -444,6 +444,19 @@ public class Universe implements StatusListener {
 		if(key == 'y'  || key == 'Y'){
 			elasticWordCreator.conectStrings();
 			System.out.println("STRINGS CONECTED");
+		}
+		
+		if(key == 'o' || key == 'O'){
+			
+//			(text, font, fontSize, position)
+			elasticWordCreator.createWordFromTwitt(
+					comedy.get((int) parent.random(comedy.size())),
+					helvetica,
+					10,
+					new PVector(parent.random(-scene.radius(), scene.radius()),
+							parent.random(-scene.radius(), 0),
+							parent.random(-scene.radius(), scene.radius())));
+
 		}
 		
 		

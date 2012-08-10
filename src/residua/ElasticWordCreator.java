@@ -10,7 +10,7 @@ import processing.core.*;
 public class ElasticWordCreator {
 
 	Universe universe;
-	int maxCount = 100;
+	int maxCount = 1000;
 	ArrayList<ElasticWord> words;
 
 

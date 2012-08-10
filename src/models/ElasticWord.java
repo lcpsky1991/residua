@@ -97,12 +97,11 @@ public class ElasticWord {
 		 
 		for(int i = 0 ; i < word.length() ; i++) {
 		
-			float massVariance = parent.random(.9f,1.1f);
+			float massVariance = parent.random(.8f, 1.2f);
 			
 //			jitter.x = parent.noise(parent.frameCount * jitterSpeed * i, 0, 0) * jitterAmplitude;
 //			jitter.y = parent.noise(0, parent.frameCount * jitterSpeed * i, 0) * jitterAmplitude;
 //			jitter.z = parent.noise(0, 0, parent.frameCount * jitterSpeed * i) * jitterAmplitude;
-
 			
 //			x0 += jitter.x;
 //			y0 += jitter.y;
@@ -118,10 +117,9 @@ public class ElasticWord {
 						z0);
 			}else {
 				
-				prevCharWidth = parent.textWidth(word.charAt(i-1));											
-				
+				prevCharWidth = parent.textWidth(word.charAt(i-1));															
 				float space = prevCharWidth * kerning;
-					
+	
 				x1 = x0 + space;
 				
 				particles[i] = ps.makeParticle(

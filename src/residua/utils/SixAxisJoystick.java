@@ -149,8 +149,8 @@ public class SixAxisJoystick extends HIDevice {
 	private int[] buttonsMode;					// TRIGGER or TOGGLE (remains in the on state)
 
 
-	private float easeIn = 0.095f; 
-	private float easeOut = 0.095f; 
+	private float easeIn = 0.09f; 
+	private float easeOut = 0.09f; 
 
 
 	/////////////////////////////////////////////////////
@@ -241,8 +241,8 @@ public class SixAxisJoystick extends HIDevice {
 			
 			//CameraProfile thirdPersonCP =  new CameraProfile(scene, "THIRD_PERSON", CameraProfile.Mode.THIRD_PERSON );
 			// scene.registerCameraProfile(thirdPersonCP);
-			setCameraMode(CameraMode.GOOGLE_EARTH);
-			camera.setPosition(new PVector(0, 0, 1200));
+			//setCameraMode(CameraMode.GOOGLE_EARTH);
+			camera.setPosition(new PVector(0, 0, 0));
 			camera.setFieldOfView(fov);
 
 			//Define the translation sensitivities
@@ -255,11 +255,14 @@ public class SixAxisJoystick extends HIDevice {
 			scene.addDevice(this);
 			//scene.avatar();
 		}
+		
+
 	}
 
 
 	// hook for automatic update
 	public void pre(){
+
 		if (available) update();
 		if (DEBUG) print();
 	}
@@ -368,7 +371,7 @@ public class SixAxisJoystick extends HIDevice {
 	
 	Frame target =  new Frame();
 	PVector targetPosition = new PVector();
-	PVector p = new PVector(0,0,1200);
+	PVector p = new PVector(0,0,2400);
 	
 	protected void handleCamera() {
 
@@ -404,8 +407,8 @@ public class SixAxisJoystick extends HIDevice {
 		
 		//System.out.println(sright.y);
 		
-		theta += sright.x * 0.01f;
-		phi += sright.y 	* 0.01f;
+		theta += sright.x * 0.005f;
+		phi += sright.y   * 0.005f;
 		
 //		theta += sright.x; //  * 0.01f;
 //		phi += sright.y;   // 	* 0.01f;
@@ -421,9 +424,16 @@ public class SixAxisJoystick extends HIDevice {
 		}
 		
 		// botones;
-		
 		if(buttonsState[0]) {
-			camera.setPosition(new PVector(0,0,200));
+			p.set(0,0,1200);
+			camera.setPosition(p);
+			camera.lookAt(new PVector());
+		}
+		if(buttonsState[1]) {
+			
+			p.set(0,0,1200);
+			p =  camera.orientation().inverseRotate(p);
+			camera.setPosition(p);
 			camera.lookAt(new PVector());
 		}
 		

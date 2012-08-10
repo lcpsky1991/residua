@@ -63,20 +63,23 @@ public class Residua extends PApplet {
 		logger.trace("inciando setup");
 
 		size(1024,768, P3D);
+		background(0);
+		noCursor();
 
-		frame.setLocation(1440, 0);
-//		frame.setLocation(0, 0);
-		System.out.println("SET LOCATION");
+//		frame.setLocation(1440, 0);
+		frame.setLocation(0, 0);
+		System.out.println("SETUP SET LOCATION");
 		proscene = new Scene(this);
 		proscene.setRadius(500);
 		proscene.camera().setFieldOfView(1.f);
 		proscene.disableKeyboardHandling();
 		proscene.setFrameRate(60);
-
+		System.out.println("SETUP SET PROSCENE");
 
 		camera = new Camera(proscene, false);
+		System.out.println("SETUP SET CAMERA");
 		gamepad = new SixAxisJoystick(proscene);
-		
+		System.out.println("SETUP SET JOYPAD");
 		
 		
 		proscene.setAxisIsDrawn(false);
@@ -84,17 +87,17 @@ public class Residua extends PApplet {
 
 
 		helvetica = loadFont("./data/Helvetica-Bold-48.vlw");
-
+		System.out.println("SETUP SET FONT");
 		textFont(helvetica);
 		textSize(14);
 
 		g3 = (PGraphics3D)g;
-
+		System.out.println("SETUP SET PG");
 		universe = new Universe(this);
 		//universe.setup();
-
+		System.out.println("SETUP SET UNIVERSE");
 		oscP5 = new OscP5(this, "127.0.0.1", 7110);
-		
+		System.out.println("SETUP SET OSC");
 //		universe.setControl(gamepad);
 		blendMode(ALPHA);
 //		smooth();
@@ -118,6 +121,7 @@ public class Residua extends PApplet {
 			break;
 		}
 		
+//		System.out.println("dale che !!!");
 		
 		
 		if(HELPERS) sceneDebug();		
