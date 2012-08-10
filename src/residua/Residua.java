@@ -11,6 +11,7 @@ import org.apache.log4j.PropertyConfigurator;
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PGraphics;
 import processing.core.PMatrix3D;
 import processing.core.PVector;
 import processing.opengl.PGraphics3D;
@@ -22,6 +23,7 @@ import residua.utils.SixAxisJoystick;
 import residua.utils.OpenNI;
 import oscP5.*;
 import netP5.*;
+import deadpixel.keystone.*;
 
 
 public class Residua extends PApplet {
@@ -34,8 +36,8 @@ public class Residua extends PApplet {
 
 	}
 
-	public static final boolean debug = false;
-	public static boolean HELPERS = false;
+	public static final boolean 	debug = false;
+	public static boolean 			HELPERS = false;
 	
 	public static final int BLACK_ON_WHITE = 1;
 	public static final int WHITE_ON_BLACK = 0;
@@ -47,12 +49,19 @@ public class Residua extends PApplet {
 	OscP5 					oscP5;
 	Scene 					proscene;
 	Camera 					camera;
+	public float[] lightColor = {255,255,255};
 	ControllIO 				hid_driver;
 	SixAxisJoystick 		gamepad;
+	
 	Universe				universe;
 
 	PFont 					helvetica;
-
+	
+	
+	Keystone ks;
+	CornerPinSurface surface;
+	
+	PGraphics offscreen;
 
 	public static Logger logger = Logger.getLogger(Residua.class);
 
@@ -66,7 +75,7 @@ public class Residua extends PApplet {
 		background(0);
 		noCursor();
 
-//		frame.setLocation(1440, 0);
+		//frame.setLocation(1440, 0);
 		frame.setLocation(0, 0);
 		System.out.println("SETUP SET LOCATION");
 		proscene = new Scene(this);
@@ -94,19 +103,23 @@ public class Residua extends PApplet {
 		g3 = (PGraphics3D)g;
 		System.out.println("SETUP SET PG");
 		universe = new Universe(this);
-		//universe.setup();
 		System.out.println("SETUP SET UNIVERSE");
 		oscP5 = new OscP5(this, "127.0.0.1", 7110);
 		System.out.println("SETUP SET OSC");
-//		universe.setControl(gamepad);
 		blendMode(ALPHA);
-//		smooth();
-		System.out.println("Salgo setup");
+		System.out.println("LEAVING SETUP");
+		
+		  ks = new Keystone(this);
+		  surface = ks.createCornerPinSurface(1024, 768, 6);
+		  offscreen = createGraphics(400, 300, P3D);
 	}
 
-	public float[] lightColor = {255,255,255};
+	
 	
 	public void draw(){
+		
+		offscreen.beginDraw();
+		
 		
 		switch (COLOR_MODE) {
 		case WHITE_ON_BLACK:
@@ -121,21 +134,25 @@ public class Residua extends PApplet {
 			break;
 		}
 		
-//		System.out.println("dale che !!!");
-		
 		
 		if(HELPERS) sceneDebug();		
 		
-		//lights();
 		ambientLight(200, 200, 200);
-//		spotLight(lightColor[0], lightColor[1], lightColor[2], 
-//				200, 200, 0, 0, 0, 0, TWO_PI / 4, .1f);
-//		
 		directionalLight(200, 200, 200, 0, 0, -1);
+		directionalLight(200, 200, 200, 0, 0, 1);
+		
 		hint(ENABLE_DEPTH_TEST);
+		
 		universe.render();
 		
 		if(HELPERS) gui();
+		offscreen.endDraw();
+		
+		background(0);  
+		  // render the scene, transformed using the corner pin surface
+		surface.render(offscreen);
+
+		
 	}
 
 	private void sceneDebug(){

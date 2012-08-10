@@ -159,3 +159,53 @@
 10 Aug 2012 13:37:40    INFO [onnection]][j.internal.logging.Log4JLogger][           info][  82] : stream.twitter.com
 10 Aug 2012 13:37:40    INFO [onnection]][j.internal.logging.Log4JLogger][           info][  82] : Waiting for 4000 milliseconds
 10 Aug 2012 13:37:40   DEBUG [liseconds]][j.internal.logging.Log4JLogger][          debug][  67] : Twitter Stream consumer-1[Waiting for 4000 milliseconds]
+10 Aug 2012 14:00:50   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:00:51   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:01:59   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:02:00   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:08:20   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:08:21   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:11:04   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:11:05   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:11:22   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:11:23   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:13:36   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:13:37   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:14:04   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:14:06   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:20:18   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:20:19   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:20:56   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:20:58   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:22:26   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:22:27   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:22:38   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:22:39   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:27:16   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:27:17   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:30:06   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:30:07   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:30:15   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:30:16   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:30:25   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:30:26   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:32:37   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:32:38   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:33:41   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:33:42   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:37:29   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:37:30   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:40:24   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 14:40:25   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 15:00:21   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 15:00:22   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 15:01:00   TRACE [ion Thread][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 15:01:01   TRACE [entQueue-0][               residua.Residua][          setup][  65] : inciando setup
+10 Aug 2012 15:09:52   TRACE [ion Thread][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:09:53   TRACE [entQueue-0][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:09:55   TRACE [entQueue-0][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:09:56   TRACE [entQueue-0][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:14:01   TRACE [ion Thread][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:14:02   TRACE [entQueue-0][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:14:49   TRACE [ion Thread][               residua.Residua][          setup][  72] : inciando setup
+10 Aug 2012 15:14:50   TRACE [entQueue-0][               residua.Residua][          setup][  72] : inciando setup

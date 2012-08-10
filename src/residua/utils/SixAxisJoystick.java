@@ -372,6 +372,7 @@ public class SixAxisJoystick extends HIDevice {
 	Frame target =  new Frame();
 	PVector targetPosition = new PVector();
 	PVector p = new PVector(0,0,2400);
+	PVector rotation = new PVector();
 	
 	protected void handleCamera() {
 
@@ -410,14 +411,24 @@ public class SixAxisJoystick extends HIDevice {
 		theta += sright.x * 0.005f;
 		phi += sright.y   * 0.005f;
 		
+		rotation.set(theta, phi, 0);
+		
+//		PVector rotated_x = camera.orientation().rotate(new PVector(1,0,0)); 
+//		PVector rotated_y = camera.orientation().rotate(new PVector(0,1,0));
+		
+		
 //		theta += sright.x; //  * 0.01f;
 //		phi += sright.y;   // 	* 0.01f;
 
 //		camera.lookAt(scene.center());
-		camera.setOrientation(theta, phi);
+//		camera.orientation().fromAxisAngle(rotated_x, theta);
+//		camera.orientation().fromAxisAngle(rotated_y, phi);
+		//camera.setOrientation(rotated_rot.x, rotated_rot.y);
+
+		
 		//camera.frame().rotateAroundPoint(new Quaternion(new PVector(0,1,0), theta), scene.center());
 		//camera.frame().rotateAroundPoint(new Quaternion(new PVector(1,0,0), phi), scene.center());
-		//camera.setOrientation(theta, phi);
+		camera.setOrientation(theta, phi);
 		}else{
 			
 			

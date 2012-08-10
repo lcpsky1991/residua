@@ -58,14 +58,14 @@ public class ElasticWord {
 	public float getTextHeight(){
 		return parent.textWidth("O");
 	}
-	public float makeLettersSpring(String w, PFont font, int fontSize, PVector pos){
+	public PVector makeLettersSpring(String w, PFont font, int fontSize, PVector pos){
 		
 		this.fontSize = fontSize;
 		return makeLettersSpring(w,font, pos.x, pos.y, pos.z);
 	}
 	
 	
-	public float makeLettersSpring(String w, PFont glf, float x, float y, float z){
+	public PVector makeLettersSpring(String w, PFont glf, float x, float y, float z){
 		
 		float wordSize = 0;
 		
@@ -96,7 +96,6 @@ public class ElasticWord {
 		parent.textSize(fontSize);
 		 
 		for(int i = 0 ; i < word.length() ; i++) {
-		
 			float massVariance = parent.random(.8f, 1.2f);
 			
 //			jitter.x = parent.noise(parent.frameCount * jitterSpeed * i, 0, 0) * jitterAmplitude;
@@ -138,11 +137,13 @@ public class ElasticWord {
 				
 			}
 			
-			wordSize = x0;
+			
 		}	
 		
+		
+		System.out.println(x1);
 
-		return wordSize;
+		return new PVector(x0, y0, z0);
 	}
 	
 	public void makeTextRing(){

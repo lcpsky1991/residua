@@ -29,23 +29,26 @@ public class ElasticWordCreator {
 
 		// split into words
 		String wordFromLine[] = text.split(" ");
-		
-//		for(int i = 0 ; i < wordFromLine.length ; i ++){
-//			System.out.println(wordFromLine[i]);
-//		}
-		
+
+		//		for(int i = 0 ; i < wordFromLine.length ; i ++){
+		//			System.out.println(wordFromLine[i]);
+		//		}
+
 		PVector pos = new PVector(position.x, position.y, position.z);
 
 		if(wordFromLine.length > 1){
-			
-			for(int i = 0 ; i < wordFromLine.length; i++){
+			PVector finalPosition;
 
+			for(int i = 0 ; i < wordFromLine.length; i++){
+				
+				ElasticWord w;
+				
 				if(wordFromLine[i].length() > 1){
-			
-					ElasticWord w = new ElasticWord(this.universe);
-					
-					float wl = w.makeLettersSpring(wordFromLine[i]+ "  ", font, fontSize, pos);
-					
+
+					w = new ElasticWord(this.universe);
+
+					finalPosition = w.makeLettersSpring(wordFromLine[i]+ "  ", font, fontSize, pos);
+
 					if(words.size() < maxCount) {
 						words.add(w);
 					}else{
@@ -53,15 +56,15 @@ public class ElasticWordCreator {
 						words.add(w);
 					}
 					// cada cuatro palabras armo otra linea
-					
-					pos.set(position.x + wl, pos.y, pos.z);
-					
+					pos.set(finalPosition);
 					if (i % 4 == 0 && i != 0) {
 						pos.set(position.x, pos.y + 1.1f * w.getTextHeight() , pos.z);
-					}
-					
+					}	
 				}
 			}
+
+
+
 		}
 
 
@@ -103,7 +106,11 @@ public class ElasticWordCreator {
 		for(Iterator<ElasticWord> i = words.iterator() ; i.hasNext(); ){
 			i.next().connectSprings();
 		}
-		
+
+	}
+
+	public ElasticWord getRandomWord() {
+		return words.get((int) (Math.random() * words.size()));
 	}
 
 
