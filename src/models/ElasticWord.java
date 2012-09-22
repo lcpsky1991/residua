@@ -25,6 +25,7 @@ public class ElasticWord {
 	Scene scene;
 
 	Particle[] particles;
+	Frame origin;
 	Frame[] nodes;
 	Spring[]  springs;
 
@@ -67,6 +68,9 @@ public class ElasticWord {
 	
 	public PVector makeLettersSpring(String w, PFont glf, float x, float y, float z){
 		
+//		origin = new Frame();
+//		origin.setRotation(0,parent.random(360), 0, 1);
+		
 		float wordSize = 0;
 		
 		this.word = w;
@@ -107,6 +111,8 @@ public class ElasticWord {
 //			z0 += jitter.z;
 			
 			nodes[i] = new Frame();
+//			nodes[i].linkTo(origin);
+			
 			
 			if(i == 0){			
 				particles[i] = ps.makeParticle(
@@ -141,7 +147,7 @@ public class ElasticWord {
 		}	
 		
 		
-		System.out.println(x1);
+		//System.out.println(x1);
 
 		return new PVector(x0, y0, z0);
 	}

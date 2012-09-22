@@ -41,7 +41,7 @@ public class Universe implements StatusListener {
 	private Scene scene;
 	private Frame origin;
 
-	private boolean useTwitter = false;
+	private boolean useTwitter = true;
 
 	private ParticleSystem ps;
 	private float psDrag = 1.1f;
@@ -121,7 +121,7 @@ public class Universe implements StatusListener {
 		terrain = new Terrain(terrainSize,terrainSize, 10);
 		float[] el = new float[terrainSize*terrainSize];
 		parent.noiseSeed(23);
-		
+
 		for (int z = 0, i = 0; z < terrainSize; z++) {
 			for (int x = 0; x < terrainSize; x++) {
 				el[i++] = parent.noise(x * .08f, z * .08f) * 20;
@@ -192,7 +192,7 @@ public class Universe implements StatusListener {
 	}
 
 	public void render() {
-		
+
 		parent.pushStyle();
 		parent.pushMatrix();
 
@@ -322,22 +322,22 @@ public class Universe implements StatusListener {
 		// MAGNETOS
 		if(key == ' '){
 			// primero elimino todas las atracciones
-//			for(int i = 0 ; i < ps.numberOfAttractions(); i++){
-//				ps.removeAttraction(i);
-//			}
-			
+			//			for(int i = 0 ; i < ps.numberOfAttractions(); i++){
+			//				ps.removeAttraction(i);
+			//			}
+
 			// y luego creo una nueva para cada palabra en este instante
 			for(int o = 0; o < magnets.size() ; o++){
-				
+
 				Magnet m = magnets.get(o);
-				
-				Particle p = elasticWordCreator.getRandomWord().getMiddleNode();
-				m.attract(p);
-				
-//				for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator(); i.hasNext(); ){					
-//					Particle p = i.next().getMiddleNode();
-//					m.attract(p);
-//				}
+
+				//				Particle p = elasticWordCreator.getRandomWord().getMiddleNode();
+				//				m.attract(p);
+
+				for(Iterator<ElasticWord> i = elasticWordCreator.words.iterator(); i.hasNext(); ){					
+					Particle p = i.next().getMiddleNode();
+					m.attract(p);
+				}
 			}
 
 			System.out.println("MAGNETS CREATED");
@@ -401,7 +401,7 @@ public class Universe implements StatusListener {
 
 		if(key == 'o' || key == 'O'){
 
-//engana pichanga para generar textos si no hay twitt
+			//engana pichanga para generar textos si no hay twitt
 			elasticWordCreator.createWordFromTwitt(
 					comedy.get((int) parent.random(comedy.size())),
 					helvetica,
@@ -412,7 +412,18 @@ public class Universe implements StatusListener {
 
 		}
 
+		if(key == 'h' || key == 'H'){
+			float fov = getSceneReference().camera().fieldOfView();
+			fov += .1f;
+			getSceneReference().camera().setFieldOfView(fov);
 
+		}
+		
+		if(key == 'g' || key == 'G'){
+			float fov = getSceneReference().camera().fieldOfView();
+			fov -= .1f;
+			getSceneReference().camera().setFieldOfView(fov);
 
+		}
 	}
 }

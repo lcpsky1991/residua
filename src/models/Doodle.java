@@ -30,7 +30,7 @@ public class Doodle {
 	Vec2D rotation=new Vec2D();
 
 	float weight=0;
-	int maxLength = 200;
+	int maxLength = 100;
 	
 	public Doodle(Universe universe){
 		this.universe = universe;

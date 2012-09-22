@@ -75,8 +75,6 @@ public class Residua extends PApplet {
 		background(0);
 		noCursor();
 
-		//frame.setLocation(1440, 0);
-		frame.setLocation(0, 0);
 		System.out.println("SETUP SET LOCATION");
 		proscene = new Scene(this);
 		proscene.setRadius(500);
@@ -87,7 +85,7 @@ public class Residua extends PApplet {
 
 		camera = new Camera(proscene, false);
 		System.out.println("SETUP SET CAMERA");
-		gamepad = new SixAxisJoystick(proscene);
+//		gamepad = new SixAxisJoystick(proscene);
 		System.out.println("SETUP SET JOYPAD");
 		
 		
@@ -109,16 +107,20 @@ public class Residua extends PApplet {
 		blendMode(ALPHA);
 		System.out.println("LEAVING SETUP");
 		
-		  ks = new Keystone(this);
-		  surface = ks.createCornerPinSurface(1024, 768, 6);
-		  offscreen = createGraphics(400, 300, P3D);
+		//frame.setLocation(1440, 0);
+		frame.setLocation(0, 0);
+		
+		
+//		  ks = new Keystone(this);
+//		  surface = ks.createCornerPinSurface(1024, 768, 6);
+//		  offscreen = createGraphics(400, 300, P3D);
 	}
 
 	
 	
 	public void draw(){
 		
-		offscreen.beginDraw();
+//		offscreen.beginDraw();
 		
 		
 		switch (COLOR_MODE) {
@@ -146,11 +148,11 @@ public class Residua extends PApplet {
 		universe.render();
 		
 		if(HELPERS) gui();
-		offscreen.endDraw();
+//		offscreen.endDraw();
 		
-		background(0);  
-		  // render the scene, transformed using the corner pin surface
-		surface.render(offscreen);
+//		background(0);  
+//		  // render the scene, transformed using the corner pin surface
+//		surface.render(offscreen);
 
 		
 	}
